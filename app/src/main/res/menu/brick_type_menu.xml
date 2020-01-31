@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/brick_type_cobble"
+        android:icon="@drawable/ic_brick_produce_black_24dp"
+        android:title="@string/brick_cobble"/>
+
+    <item
+        android:id="@+id/brick_type_boarder"
+        android:icon="@drawable/ic_brick_boarder_black_24dp"
+        android:title="@string/brick_boarder"/>
+
+    <item
+        android:id="@+id/brick_type_fence"
+        android:icon="@drawable/ic_brick_fence_black_24dp"
+        android:title="@string/brick_fence"/>
+</menu>

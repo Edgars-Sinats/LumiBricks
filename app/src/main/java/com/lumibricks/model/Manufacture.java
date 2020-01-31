@@ -1,0 +1,84 @@
+package com.lumibricks.model;
+
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.lumibricks.R;
+
+public class Manufacture {
+
+    private String userID;
+    private String userName;
+
+    private String brick;
+    private String height;
+    private String color;
+    private String lumi;
+    private String quality;
+    private String amount;
+
+    public Manufacture() {    }
+
+    public Manufacture(String brick, String height, String color, String lumi, String quality, String amount) {
+        this.brick = brick;
+        this.height = height;
+        this.color = color;
+        this.lumi = lumi;
+        this.quality = quality;
+        this.amount = amount;
+    }
+
+    public static Manufacture getDefault(){
+        Manufacture manufacture = new Manufacture();
+
+        return manufacture;
+    }
+
+    public String getBrick() {
+        return brick;
+    }
+
+    public void setBrick(String brick) {
+        this.brick = brick;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getLumi() {
+        return lumi;
+    }
+
+    public void setLumi(String lumi) {
+        this.lumi = lumi;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public void setQuality(String quality) {
+        this.quality = quality;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+}

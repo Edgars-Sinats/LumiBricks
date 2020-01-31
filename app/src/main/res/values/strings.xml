@@ -1,0 +1,109 @@
+<resources>
+    <string name="app_name">LumiBricks</string>
+
+<!--    Temporary-->
+    <string name="brick_amount">20</string>
+
+
+    <string name="brick_size">Izmērs: 100x200(mm)</string>
+    <string name="brick_height">Augstums: X(mm)</string>
+    <string name="brick_quantity">Daudzums (gb)</string>
+    <string name="brick_secondary_quantity">2. Šķira (gb): </string>
+    <string name="brick_primary_quantity">1. Šķira: </string>
+    <string name="brick_color">Krāsa: </string>
+    <string name="order_brick">Pasūtīt </string>
+    <string name="sold_brick">Pārdot </string>
+    <string name="produce_brick">Ražot </string>
+    <string name="divider_bullet">•</string>
+    <string name="brick_2Class">2.Šķira</string>
+    <string name="brick_1Class">1.Šķira</string>
+
+    <string name="brick_fence">Sētas</string>
+    <string name="brick_boarder">Apmales</string>
+    <string name="brick_cobble">Bruģis </string>
+    <string name="header_filters">Filter</string>
+
+
+
+    <string name="value_brick_types">Viss katalogs</string>
+    <string name="value_brick_height">Biezums</string>
+    <string name="value_brick_color">Krāsa</string>
+    <string name="value_brick_lumi">Spīdums</string>
+    <string name="value_brick_quality">Kvalitāte</string>
+    <string name="brick_insert_amount">Ievadiet daudzumu</string>
+    <string name="cancel">Atcelt</string>
+
+    <string name="lumi_1">nav</string>
+    <string name="lumi_2">Zaļš</string>
+    <string name="lumi_3">Zils</string>
+
+    <string name="height_1">80</string>
+    <string name="height_2">50</string>
+    <string name="height_3">60</string>
+    <string name="height_4">70</string>
+    <string name="height_5">150</string>
+
+
+
+<!--    <item>@string/value_brick_types</item>-->
+    <string-array name="brick_type">
+
+        <item>Mozaīka</item>
+        <item>Asorti</item>
+        <item>Nast 5</item>
+        <item>Prizma 5</item>
+<!--        <item>Nast 6</item>-->
+<!--        <item>Prizma 6</item>-->
+        <item>Nast G</item>
+        <item>Sigma 8</item>
+        <item>TAVR(Kauls)</item>
+        <item>Nast 8 puse</item>
+        <item>Nast 8 mini</item>
+        <item>Konuss-1</item>
+        <item>Konuss-2</item>
+        <item>Betona plāksne400x500x60</item>
+        <item>Betona plāksne300x300x70</item>
+        <item>Betona plāksne450x300x70</item>
+        <item>Betona plāksne750x300x70</item>
+        <item>Tekne</item>
+        <item>Taktila pump</item>
+        <item>Taktila line</item>
+    </string-array>
+
+<!--    <item>@string/value_brick_height</item>-->
+    <string-array name="brick_height">
+
+        <item>@string/height_1</item>
+        <item>@string/height_2</item>
+        <item>@string/height_3</item>
+        <item>@string/height_4</item>
+        <item>@string/height_5</item>
+
+    </string-array>
+
+<!--    <item>@string/value_brick_color</item>-->
+    <string-array name="brick_color">
+
+        <item>Pelēks</item>
+        <item>Zaļš</item>
+        <item>Dzeltens</item>
+        <item>Oranžš</item>
+        <item>Sarkans</item>
+        <item>Melns</item>
+        <item>Brūns</item>
+        <item>Balts</item>
+
+    </string-array>
+
+
+<!--    <item>@string/value_brick_lumi</item>-->
+    <string-array name="brick_lumi">
+
+        <item>@string/lumi_1</item>
+        <item>@string/lumi_2</item>
+        <item>@string/lumi_3</item>
+
+    </string-array>
+
+
+</resources>
