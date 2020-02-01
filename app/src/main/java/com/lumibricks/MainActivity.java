@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -43,29 +44,19 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseFirestore mFirestore;
     private DocumentReference mWarehauseRef;
 
-    private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private static final int RC_SIGN_IN = 9001;
 
     private static final int LIMIT = 20;
+    private int imageInt;
 
-    private Button mPrivateButton;
-    private Button mOrderButton;
-    private Button mManufactureButton;
     private Toolbar mToolbar;
-    private BottomNavigationView menuBrickType;
     private BottomNavigationView menuBrickAction;
     private RecyclerView mBricksRecycler;
 
-
     private FilterDialogFragment mDialogFragment;
-
-
-
-
-//    private FirestoreRecylerAdapter<BrickModel, ProductViewHolder> adapter;
 
 
     @Override
@@ -74,10 +65,12 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         
 
+        mToolbar = findViewById(R.id.toolbar);
         mBricksRecycler = findViewById(R.id.recyclerRestaurants);
         mBricksRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
 //        mBricksRecycler.setLayoutManager(new LinearLayoutManager(this));
+
 
         findViewById(R.id.bottom_nav_view).setOnClickListener(this);
         findViewById(R.id.brick_navigation_produce).setOnClickListener(this);
@@ -87,27 +80,8 @@ public class MainActivity extends AppCompatActivity implements
         mFirestore = FirebaseFirestore.getInstance();
         mWarehauseRef = mFirestore.collection("bricks").document("warehouse");
 
-//        Query query = rootRef.collection("products")
-//                .orderBy("productName", Query.Direction.ASCENDING);
-
-//        FirestoreRecyclerOptions<BrickModel> options = new FirestoreRecyclerOptions.Builder<BrickModel>()
-//                .setQuery(query, BrickModel.class)
-//                .build();
-
-
-
 //        menuBrickAction = findViewById(R.id.bottom_nav_view);
-
 //        menuBrickAction.getSelectedItemId();
-
-
-
-//        mManufactureButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
 
         mDialogFragment = new FilterDialogFragment();
     }
@@ -126,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.brick_menu, menu);
+        getMenuInflater().inflate(R.menu.app_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -173,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void processDocument(DocumentSnapshot brickDoc){
-        int size = brickDoc.getData().size();
 
         HashMap<Integer, BrickModel> brickList = new HashMap<>();
         ArrayList<BrickModel> brickArrayList = new ArrayList<>();
@@ -183,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements
         int num = 0;
 
 //        ArrayList<String> keyList = new ArrayList<>();
+        //ToDO when project Run again, document has`t downloded new file from firestore. When delated row record from firestore,
+        // its not showed in device.(Still old recodrs remaining, eaven when app is restardet and unistaled!)
+        // Only when project is rebuilding after (5min) there are new changes shown  in a phone!
         Iterator myIter = brickDoc.getData().keySet().iterator();
         while (myIter.hasNext()){
             num = num+1;
@@ -190,56 +166,84 @@ public class MainActivity extends AppCompatActivity implements
             value = brickDoc.getData().get(key).toString();
 
             BrickModel brickMode2 = new BrickModel();
-            brickMode2.setmImageResource(R.drawable.ic_brick_type_black_24dp);
+
             brickMode2.setAmount(value);
-            brickMode2.setBrickName(key);
+
+            //TODO transform key
+            String[] trasformedKey;
+            String newKey;
+
+//            trasformedKey = key.split("\\_");
+            trasformedKey = key.split(Pattern.quote("_"));
+            Log.d(TAG, "TransformedKey: " + trasformedKey);
+
+            newKey = trasformedKey[0] + " " + trasformedKey[1] + " " + trasformedKey[2] + " " + trasformedKey[3] + " " + trasformedKey[4];
+            Log.d(TAG, "c: " + newKey);
+
+            setBrickImage(trasformedKey[0], trasformedKey[3]);
+            brickMode2.setmImageResource(imageInt);
+
+            brickMode2.setBrickName(newKey);
             brickList.put(num, brickMode2);
             brickArrayList.add(brickMode2);
 
-
         }
-//        keyList = (ArrayList<String>) brickDoc.getData().keySet();
-//        String brickName;
-
-//        valueList = brickDoc.getData().values();
-
-
-//        keyList.get(1);
 
         Log.d(TAG, "processDocument: .doc:" + brickDoc);
 
-//        for(viewed = 1; viewed <= size; viewed++){
-//
-//            brickName = keyList.get(viewed);
-//            value = (Integer) brickDoc.getData().get(brickName);
-//            String valuAsString = value.toString();
-//
-//            BrickModel brickModel = new BrickModel();
-//            brickModel.setAmount(valuAsString);
-//            brickModel.setBrickName(brickName);
-//
-//            brickY.put(brickName, value);  //onebrick
-//            brickList.put(viewed, brickModel);
-//
-//
-//        }
         mAdapter = new BrickAdapter(brickArrayList);
         mBricksRecycler.setLayoutManager(mLayoutManager);
 
         mBricksRecycler.setAdapter(mAdapter);
 
-
         Log.d(TAG, "processDocument: Brick Array List\n" + brickArrayList);
         Log.d(TAG, "processDocument: BrickHashMap\n" + brickList);
-        Log.d(TAG, "processDocument: " );
 
     }
 
-    private void setView(){
-//        adapter = new FirestoreRecylerAdapter<BrickModel, ProductViewHolder>(){
+    private void setBrickImage(String brickName, String lumi){
+        String amTestArray[] = getResources().getStringArray(R.array.brick_type);
+
+        if( brickName.equals(amTestArray[0]) && lumi.equals(getString(R.string.lumi_1)) ){
+            imageInt = R.drawable.z_nastx_day;
+
+        }else if(brickName.equals(amTestArray[0])){
+            imageInt = R.drawable.z_nast_night;
+
+        }else if(brickName.equals(amTestArray[1]) && lumi.equals(getString(R.string.lumi_1)) ){
+            imageInt = R.drawable.z_prizmax_day;
+
+        }else if(brickName.equals(amTestArray[1])){
+            imageInt = R.drawable.z_prizmax_night;
+
+        }else if(brickName.equals(amTestArray[2]) && lumi.equals(getString(R.string.lumi_1)) ){
+            imageInt = R.drawable.z_asortix_day;
+
+        }else if(brickName.equals(amTestArray[2])){
+            imageInt = R.drawable.z_asortix_night;
+
+        }else if(brickName.equals(amTestArray[3]) && lumi.equals(getString(R.string.lumi_1)) ){
+            imageInt = R.drawable.z_plaksne_day;
+
+        }else if(brickName.equals(amTestArray[3])){
+            imageInt = R.drawable.z_plaksne_night;
+
+        }else {
+            imageInt = R.drawable.ic_brick_type_black_24dp;
+        }
+
+//        switch (brickName){
+//            case amTestArray:
+//                Log.d(TAG, "setBrickImage: ");
+//                a= brickName+"s";
+//                break;
+//
+//            case  "s1":
+//                Log.d(TAG, "setBrickImage: " + "s");
+//                break;
+//        }
 
     }
-
 
     private class ProductViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -306,6 +310,4 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
-//    private class FirestoreRecylerAdapter<T, T1> {}
 }

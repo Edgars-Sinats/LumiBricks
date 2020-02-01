@@ -42,32 +42,34 @@
     <string name="height_3">60</string>
     <string name="height_4">70</string>
     <string name="height_5">150</string>
+    <string name="users">lietotāji</string>
+    <string name="setting">iestatījumi</string>
 
 
-
-<!--    <item>@string/value_brick_types</item>-->
+    <!--    <item>@string/value_brick_types</item>-->
+<!--    If changed order in array(first 4 items), than need to change MainActivity.setBrickImage __else if(){}__ statement  -->
     <string-array name="brick_type">
 
-        <item>Mozaīka</item>
+        <item>Nast-5</item>
+        <item>Prizma-5</item>
         <item>Asorti</item>
-        <item>Nast 5</item>
-        <item>Prizma 5</item>
-<!--        <item>Nast 6</item>-->
-<!--        <item>Prizma 6</item>-->
-        <item>Nast G</item>
-        <item>Sigma 8</item>
+        <item>Betona-plāksne300x300x70</item>
+        <item>Mozaīka</item>
+        <!--        <item>Nast 6</item>-->
+        <!--        <item>Prizma 6</item>-->
+        <item>Nast-G</item>
+        <item>Sigma-8</item>
         <item>TAVR(Kauls)</item>
-        <item>Nast 8 puse</item>
-        <item>Nast 8 mini</item>
+        <item>Nast-8-puse</item>
+        <item>Nast-8-mini</item>
         <item>Konuss-1</item>
         <item>Konuss-2</item>
-        <item>Betona plāksne400x500x60</item>
-        <item>Betona plāksne300x300x70</item>
-        <item>Betona plāksne450x300x70</item>
-        <item>Betona plāksne750x300x70</item>
+        <item>Plāksne400x500x60</item>
+        <item>Betona-plāksne450x300x70</item>
+        <item>Betona-plāksne750x300x70</item>
         <item>Tekne</item>
-        <item>Taktila pump</item>
-        <item>Taktila line</item>
+        <item>Taktila-pump</item>
+        <item>Taktila-line</item>
     </string-array>
 
 <!--    <item>@string/value_brick_height</item>-->
