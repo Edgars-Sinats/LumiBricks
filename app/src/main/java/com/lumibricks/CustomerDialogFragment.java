@@ -1,4 +1,9 @@
 package com.lumibricks;
 
-public class CustomerDialogFragment {
+import androidx.fragment.app.DialogFragment;
+
+public class CustomerDialogFragment extends DialogFragment {
+
+    public static final String TAG = "CustomerDialogFragment";
+
 }

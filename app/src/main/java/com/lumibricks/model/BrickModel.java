@@ -13,11 +13,15 @@ public class BrickModel {
         this.amount = amount;
     }
 
-    public int getmImageResource() {
+    public void changeImage(int imageResource){
+        mImageResource = imageResource;
+    }
+
+    public int getImageResource() {
         return mImageResource;
     }
 
-    public void setmImageResource(int mImageResource) {
+    public void setImageResource(int mImageResource) {
         this.mImageResource = mImageResource;
     }
 

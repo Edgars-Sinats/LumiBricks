@@ -1,8 +1,8 @@
 package com.lumibricks;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,10 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -26,9 +25,6 @@ import com.lumibricks.model.BrickModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -39,11 +35,14 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity implements
                 View.OnClickListener{
 
+    ArrayList<BrickModel> brickArrayList;
+
     private static final String TAG = "MainActivity";
 
     private FirebaseFirestore mFirestore;
     private DocumentReference mWarehauseRef;
 
+    private BrickAdapter mBrickAdapter;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
@@ -53,10 +52,13 @@ public class MainActivity extends AppCompatActivity implements
     private int imageInt;
 
     private Toolbar mToolbar;
-    private BottomNavigationView menuBrickAction;
+//    private BottomNavigationView menuBrickAction;
     private RecyclerView mBricksRecycler;
+    private ImageView mButtonRemove;
+    private CardView mFilterBar;
 
     private FilterDialogFragment mDialogFragment;
+
 
 
     @Override
@@ -66,9 +68,10 @@ public class MainActivity extends AppCompatActivity implements
         
 
         mToolbar = findViewById(R.id.toolbar);
-        mBricksRecycler = findViewById(R.id.recyclerRestaurants);
-        mBricksRecycler.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+//        mFrameLayout
+        mButtonRemove = findViewById(R.id.buttonClearFilter);
+        mFilterBar = findViewById(R.id.filterBar);
+
 //        mBricksRecycler.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -84,7 +87,47 @@ public class MainActivity extends AppCompatActivity implements
 //        menuBrickAction.getSelectedItemId();
 
         mDialogFragment = new FilterDialogFragment();
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.d(TAG, "onMenuItemClick: " + item);
+                return false;
+            }
+        });
+
+        mButtonRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (brickArrayList.get(3) != null){
+                    deleteRow(3);
+                } else {
+                    //TODO add new dialog fragment for error handler.
+                    return;
+                }
+            }
+        });
+
+
     }
+
+    private void deleteRow(int position) {
+
+        brickArrayList.remove(position);
+        mBrickAdapter.notifyItemRemoved(position);
+    }
+
+    public void changeItem(int position, int image) {
+        brickArrayList.get(position).changeImage(image);
+        mBrickAdapter.notifyItemChanged(position);
+    }
+
+    public void openItem(int position) {
+
+
+    }
+
+
 
 
     public void onManufactureClicked(String buttonName) {
@@ -149,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
     public void processDocument(DocumentSnapshot brickDoc){
 
         HashMap<Integer, BrickModel> brickList = new HashMap<>();
-        ArrayList<BrickModel> brickArrayList = new ArrayList<>();
+        brickArrayList = new ArrayList<>();
 
         String key;
         String value;
@@ -177,11 +220,12 @@ public class MainActivity extends AppCompatActivity implements
             trasformedKey = key.split(Pattern.quote("_"));
             Log.d(TAG, "TransformedKey: " + trasformedKey);
 
+
             newKey = trasformedKey[0] + " " + trasformedKey[1] + " " + trasformedKey[2] + " " + trasformedKey[3] + " " + trasformedKey[4];
             Log.d(TAG, "c: " + newKey);
 
             setBrickImage(trasformedKey[0], trasformedKey[3]);
-            brickMode2.setmImageResource(imageInt);
+            brickMode2.setImageResource(imageInt);
 
             brickMode2.setBrickName(newKey);
             brickList.put(num, brickMode2);
@@ -191,13 +235,43 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d(TAG, "processDocument: .doc:" + brickDoc);
 
-        mAdapter = new BrickAdapter(brickArrayList);
-        mBricksRecycler.setLayoutManager(mLayoutManager);
-
-        mBricksRecycler.setAdapter(mAdapter);
+        buildRecyclerView();
 
         Log.d(TAG, "processDocument: Brick Array List\n" + brickArrayList);
         Log.d(TAG, "processDocument: BrickHashMap\n" + brickList);
+
+    }
+
+    public void buildRecyclerView() {
+        mBricksRecycler = findViewById(R.id.recyclerRestaurants);
+        mBricksRecycler.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+
+//        mAdapter = new BrickAdapter(brickArrayList);
+        mBrickAdapter = new BrickAdapter(brickArrayList);
+        mBricksRecycler.setLayoutManager(mLayoutManager);
+
+        mBricksRecycler.setAdapter(mBrickAdapter);
+
+        mBrickAdapter.setOnItemClickListener(new BrickAdapter.OnItemclickListener() {
+            @Override
+            public void onItemClick(int position) {
+//                changeItem(position, R.drawable.ic_brick_fence_black_24dp);
+                Log.d(TAG, "onItemClick: ");
+            }
+
+            @Override
+            public void onEditClick(int position) {
+            }
+
+            @Override
+            public void onSellClick(int position, int amount) {
+
+            }
+        });
+
+
+
 
     }
 

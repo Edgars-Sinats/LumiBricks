@@ -14,7 +14,7 @@
 
     <item
         android:id="@+id/brick_toolbar_setting"
-        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:icon="@drawable/ic_1_class_black_24dp"
         android:title="@string/setting"/>
 
 </menu>

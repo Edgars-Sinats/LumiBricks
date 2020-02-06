@@ -141,7 +141,7 @@
             android:layout_toEndOf="@+id/iconBrickItemCount"
             android:hint="@string/brick_insert_amount"
             android:inputType="number"
-            android:text="@string/brick_amount" />
+            android:text="@string/brick_fake_amount" />
 
     </RelativeLayout>
 

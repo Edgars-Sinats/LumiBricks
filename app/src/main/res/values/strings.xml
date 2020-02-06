@@ -2,9 +2,11 @@
     <string name="app_name">LumiBricks</string>
 
 <!--    Temporary-->
-    <string name="brick_amount">20</string>
+    <string name="brick_fake_amount">20</string>
 
 
+
+    <string name="brick_amount">Daudzums</string>
     <string name="brick_size">Izmērs: 100x200(mm)</string>
     <string name="brick_height">Augstums: X(mm)</string>
     <string name="brick_quantity">Daudzums (gb)</string>
@@ -12,12 +14,15 @@
     <string name="brick_primary_quantity">1. Šķira: </string>
     <string name="brick_color">Krāsa: </string>
     <string name="order_brick">Pasūtīt </string>
+
+        <!--    4. Option for brick in warehouse-->
+    <string name="destroy_brick">Likvidēt </string>
     <string name="sold_brick">Pārdot </string>
     <string name="produce_brick">Ražot </string>
-    <string name="divider_bullet">•</string>
     <string name="brick_2Class">2.Šķira</string>
-    <string name="brick_1Class">1.Šķira</string>
 
+    <string name="divider_bullet">•</string>
+    <string name="brick_1Class">1.Šķira</string>
     <string name="brick_fence">Sētas</string>
     <string name="brick_boarder">Apmales</string>
     <string name="brick_cobble">Bruģis </string>
@@ -25,7 +30,7 @@
 
 
 
-    <string name="value_brick_types">Viss katalogs</string>
+    <string name="value_brick_types">Bruģa pilns nosaukums</string>
     <string name="value_brick_height">Biezums</string>
     <string name="value_brick_color">Krāsa</string>
     <string name="value_brick_lumi">Spīdums</string>
@@ -50,13 +55,11 @@
 <!--    If changed order in array(first 4 items), than need to change MainActivity.setBrickImage __else if(){}__ statement  -->
     <string-array name="brick_type">
 
-        <item>Nast-5</item>
-        <item>Prizma-5</item>
+        <item>Nast</item>
+        <item>Prizma</item>
         <item>Asorti</item>
-        <item>Betona-plāksne300x300x70</item>
+        <item>Plāksne300x300</item>
         <item>Mozaīka</item>
-        <!--        <item>Nast 6</item>-->
-        <!--        <item>Prizma 6</item>-->
         <item>Nast-G</item>
         <item>Sigma-8</item>
         <item>TAVR(Kauls)</item>
@@ -64,13 +67,16 @@
         <item>Nast-8-mini</item>
         <item>Konuss-1</item>
         <item>Konuss-2</item>
-        <item>Plāksne400x500x60</item>
-        <item>Betona-plāksne450x300x70</item>
-        <item>Betona-plāksne750x300x70</item>
+        <item>Plāksne-400x500</item>
+        <item>Plāksne-450x300</item>
+        <item>Plāksne750x300</item>
         <item>Tekne</item>
         <item>Taktila-pump</item>
         <item>Taktila-line</item>
+
     </string-array>
+    <!--        <item>Nast 6</item>-->
+    <!--        <item>Prizma 6</item>-->
 
 <!--    <item>@string/value_brick_height</item>-->
     <string-array name="brick_height">

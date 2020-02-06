@@ -1,5 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+<!--    <include android:id="@+id/brick_top_card"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_width="match_parent"-->
+<!--        layout="@layout/list_item_brugis"/>-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/brickItemImageDelete"-->
+<!--        android:layout_width="@android:dimen/app_icon_size"-->
+<!--        android:layout_height="@android:dimen/app_icon_size"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:layout_below="@id/brick_top_card"-->
+<!--        android:background="#757575"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:src="@drawable/ic_brick_fence_black_24dp"-->
+<!--        android:scaleType="centerCrop" />-->
+
+    <TextView
+        android:id="@+id/brickItemTextDelete"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/brickItemImageDelete"
+        android:layout_below="@+id/brickItemImageDelete"
+        android:ellipsize="end"
+
+        android:text="@string/destroy_brick" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/brickItemImageSell"-->
+<!--        android:layout_width="@android:dimen/app_icon_size"-->
+<!--        android:layout_height="@android:dimen/app_icon_size"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:layout_below="@id/brick_top_card"-->
+<!--        android:layout_toEndOf="@id/brickItemImageDelete"-->
+<!--        android:background="#757575"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:src="@drawable/ic_brick_sold_black_24dp"-->
+<!--        android:scaleType="centerCrop" />-->
+
+    <TextView
+        android:id="@+id/brickItemTextSell"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/brickItemImageSell"
+        android:layout_below="@+id/brickItemImageSell"
+        android:ellipsize="end"
+
+        android:text="@string/sold_brick" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/brickItemImageManufacture"-->
+<!--        android:layout_width="@android:dimen/app_icon_size"-->
+<!--        android:layout_height="@android:dimen/app_icon_size"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:layout_below="@id/brick_top_card"-->
+<!--        android:layout_toEndOf="@id/brickItemImageSell"-->
+<!--        android:background="#757575"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:src="@drawable/ic_brick_produce_black_24dp"-->
+<!--        android:scaleType="centerCrop" />-->
+
+    <TextView
+        android:id="@+id/brickItemTextProduce"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/brickItemImageManufacture"
+        android:layout_below="@+id/brickItemImageManufacture"
+        android:ellipsize="end"
+        android:text="@string/produce_brick" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/brickItemImage2_Quality"-->
+<!--        android:layout_width="@android:dimen/app_icon_size"-->
+<!--        android:layout_height="@android:dimen/app_icon_size"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:layout_below="@id/brick_top_card"-->
+<!--        android:layout_toEndOf="@id/brickItemImageManufacture"-->
+<!--        android:background="#757575"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:src="@drawable/ic_2_class_black_24dp"-->
+<!--        android:scaleType="centerCrop" />-->
+
+    <TextView
+        android:id="@+id/brickItemTextQuality"
+        style="@style/AppTheme.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/brickItemImage2_Quality"
+        android:layout_below="@+id/brickItemImage2_Quality"
+        android:ellipsize="end"
+
+        android:text="@string/brick_secondary_quantity" />
+
+
+
+<!--    <EditText-->
+<!--        android:id="@+id/brickEditTextQualityQuantityTransfer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@android:dimen/app_icon_size"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:layout_below="@id/brick_top_card"-->
+<!--        android:layout_toEndOf="@id/brickItemImage2_Quality"-->
+<!--        android:inputType="number"-->
+<!--        android:hint="@string/brick_amount" />-->
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/BrickItemHeight1"-->
+<!--        style="@style/AppTheme.Subheader"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/BrickItemName1"-->
+<!--        android:layout_toEndOf="@+id/brickItemImage1"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="-2dp"-->
+<!--        android:layout_marginBottom="4dp"-->
+<!--        android:ellipsize="end"-->
+<!--        android:maxLines="1"-->
+<!--        android:scrollHorizontally="true"-->
+<!--        android:text="@string/brick_color" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/BrickItemColor"-->
+<!--        style="@style/AppTheme.Subheader"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/BrickItemName1"-->
+<!--        android:layout_toEndOf="@+id/brickItemImage1"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="-2dp"-->
+<!--        android:layout_marginBottom="4dp"-->
+<!--        android:ellipsize="end"-->
+<!--        android:maxLines="1"-->
+<!--        android:scrollHorizontally="true"-->
+<!--        android:text="@string/brick_color" />-->
+
+<!--    <Switch-->
+<!--        android:id="@+id/switch1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Switch" />-->
+
 
 </RelativeLayout>

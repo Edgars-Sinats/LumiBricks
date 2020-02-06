@@ -135,7 +135,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 
         List<String> lines2 = Arrays.asList(getResources().getStringArray(R.array.brick_color));
 
-
         return mRootView;
     }
 
@@ -168,7 +167,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             Log.d(TAG, "Set brick amount:(1.0) " + updatedAmount);
 
             if(abooleanOrder){
-                //TODO check if that order brick already exist! If it does, do a Query, just like a queryExistingDatabase()
+                //TODO check if that order brick already exist! If it does, fdo a Query, just like a queryExistingDatabase()
                 onFirestoreInsert(publickBrickName, mOrderRef);
             }else{
                 queryExistingDatabase();
