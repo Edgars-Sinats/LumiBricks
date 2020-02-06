@@ -1,5 +1,6 @@
 package com.lumibricks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -14,17 +15,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.lumibricks.adapter.BrickAdapter;
+import com.lumibricks.adapter.FirestoreAdapter;
 import com.lumibricks.model.BrickModel;
+import com.lumibricks.model.Manufacture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -41,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private FirebaseFirestore mFirestore;
     private DocumentReference mWarehauseRef;
+    private DocumentReference mWarehauseRefTest;
+    private Manufacture newManufactureObject;
+
+
+
 
     private BrickAdapter mBrickAdapter;
     private RecyclerView.Adapter mAdapter;
@@ -82,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mFirestore = FirebaseFirestore.getInstance();
         mWarehauseRef = mFirestore.collection("bricks").document("warehouse");
+        mWarehauseRefTest = mFirestore.collection("bricks").document("test");
 
 //        menuBrickAction = findViewById(R.id.bottom_nav_view);
 //        menuBrickAction.getSelectedItemId();
@@ -96,15 +108,15 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        //TODO make floating button when brickArrayList has been changed.
+        // FloatingButton pushToBricksTOFirestore;
+        //Make insert in database with new brickAdapter
         mButtonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (brickArrayList.get(3) != null){
-                    deleteRow(3);
-                } else {
-                    //TODO add new dialog fragment for error handler.
-                    return;
-                }
+                insertDocInFirestore("s");
+                //TODO will create update whit new document
+
             }
         });
 
@@ -189,6 +201,35 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    public void insertDocInFirestore(String amount){
+        Integer brickItemValue;
+        String fullBrickName;
+        int brickListSize = brickArrayList.size();
+
+        final Map<String, Object> brickW2 = new HashMap<>();
+
+        for (int i =0; i<brickListSize; i++){
+            fullBrickName = brickArrayList.get(i).getBrickName();
+            brickItemValue = Integer.parseInt(brickArrayList.get(i).getAmount());
+
+            brickW2.put(fullBrickName, brickItemValue);
+
+        }
+
+
+        mWarehauseRefTest.set(brickW2).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFail: e:\n" + e);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuc: brickW2 created 5.0:  " + brickW2);
+            }
+        });
+    }
+
     public void processDocument(DocumentSnapshot brickDoc){
 
         HashMap<Integer, BrickModel> brickList = new HashMap<>();
@@ -260,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d(TAG, "onItemClick: ");
             }
 
+
             @Override
             public void onEditClick(int position) {
             }
@@ -305,17 +347,6 @@ public class MainActivity extends AppCompatActivity implements
         }else {
             imageInt = R.drawable.ic_brick_type_black_24dp;
         }
-
-//        switch (brickName){
-//            case amTestArray:
-//                Log.d(TAG, "setBrickImage: ");
-//                a= brickName+"s";
-//                break;
-//
-//            case  "s1":
-//                Log.d(TAG, "setBrickImage: " + "s");
-//                break;
-//        }
 
     }
 

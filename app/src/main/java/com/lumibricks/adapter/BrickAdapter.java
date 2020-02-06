@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 //import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,17 +20,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumibricks.MainActivity;
 import com.lumibricks.R;
 import com.lumibricks.model.BrickModel;
 
 import java.util.ArrayList;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.lumibricks.FilterDialogFragment.TAG;
-import static java.lang.Integer.numberOfLeadingZeros;
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.remainderUnsigned;
 
 //extend BrickModel
 public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHolder> {
@@ -46,6 +40,7 @@ public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHol
         void onItemClick(int position);
         void onEditClick(int position);
         void onSellClick(int position, int amount);
+
     }
 
     public void setOnItemClickListener(OnItemclickListener listener) {
@@ -183,12 +178,12 @@ public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHol
                 //TODO notified a user about empty field
             }else {
                 Log.d(TAG, "onClick: Good job EditText .equal: " + mAmountEditText.getText());
-                firebaseAdapter(image, pos);
+                firebaseExistingDocAdapter(image, pos);
 
             }
         }
 
-        void firebaseAdapter(String image, int position){
+        void firebaseExistingDocAdapter(String image, int position){
             //Text view brick amount
             String editTextAmount = mAmountEditText.getText().toString();
             int editableAmount = Integer.parseInt(editTextAmount);
@@ -200,87 +195,45 @@ public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHol
             //Compare brick amounts(to avoid nul point exceptions)
             boolean inputSmaller = editableAmount <= currentBrickAmount;
 
-            Log.d(TAG, "firebaseAdapter: currentAmount: " + currentBrickAmount);
+            Log.d(TAG, "firebaseExistingDocAdapter: currentAmount: " + currentBrickAmount);
 
             if (image.equals("mDestroy") & inputSmaller){
-                Log.d(TAG, "firebaseAdapter: mDestroy: " + editTextAmount);
-
-                int newBrickAmount = currentBrickAmount - editableAmount;
-                writeNewBrickAmount(newBrickAmount, currentBrick);
-//                String newBrickAmountValue = String.valueOf(newBrickAmount);
-//                Log.d(TAG, "mBrick new value: " + newBrickAmountValue);
-//                currentBrick.setAmount(newBrickAmountValue);
-
-            }else if(image.equals("mSeal") && inputSmaller){
-                Log.d(TAG, "firebaseAdapter: mSeal: " + editTextAmount);
+                Log.d(TAG, "firebaseExistingDocAdapter: mDestroy: " + editTextAmount);
 
                 int newBrickAmount = currentBrickAmount - editableAmount;
                 writeNewBrickAmount(newBrickAmount, currentBrick);
 
-//                String newBrickAmountValue = String.valueOf(newBrickAmount);
-//                Log.d(TAG, "mBrick new value: " + newBrickAmountValue);
-//                currentBrick.setAmount(newBrickAmountValue);
+            } else if(image.equals("mSeal") && inputSmaller){
+                Log.d(TAG, "firebaseExistingDocAdapter: mSeal: " + editTextAmount);
 
-            }else if (image.equals("mProduce")){
-                Log.d(TAG, "firebaseAdapter: mProduce: " + editTextAmount);
+                int newBrickAmount = currentBrickAmount - editableAmount;
+                writeNewBrickAmount(newBrickAmount, currentBrick);
+
+
+            } else if (image.equals("mProduce")){
+                Log.d(TAG, "firebaseExistingDocAdapter: mProduce: " + editTextAmount);
 
                 int newBrickAmount = currentBrickAmount + editableAmount;
                 writeNewBrickAmount(newBrickAmount, currentBrick);
 
-//                String newBrickAmountValue = String.valueOf(newBrickAmount);
-//                Log.d(TAG, "mDestroy new value: " + newBrickAmountValue);
-//                currentBrick.setAmount(newBrickAmountValue);
             } else if (image.equals("m2Class")){
-                Log.d(TAG, "firebaseAdapter: m2Class: " + editTextAmount);
+                Log.d(TAG, "firebaseExistingDocAdapter: m2Class: " + editTextAmount);
 
                 int newBrickAmount = currentBrickAmount - editableAmount;
                 writeNewBrickAmount(newBrickAmount, currentBrick);
 
-//                String newBrickAmountValue = String.valueOf(newBrickAmount);
-//                Log.d(TAG, "mBrick new value: " + newBrickAmountValue);
-//                currentBrick.setAmount(newBrickAmountValue);
+
             } else {
-                Log.wtf(TAG, "firebaseAdapter: Something went wrong!\n");
+                Log.wtf(TAG, "firebaseExistingDocAdapter: Something went wrong!\n");
             }
 
-
-
-//            //TODO make if else statement with boolean (inputSmaller)
-//            switch (image){
-//                case ("mDestroy"):
-//                    Log.d(TAG, "firebaseAdapter: Destroy: " + editTextAmount);
-//
-//                    int newBrickAmount = currentBrickAmount-editableAmount;
-//                    String newBrickAmountValue = String.valueOf(newBrickAmount);
-//                    Log.d(TAG, "mDestroy new value: " + newBrickAmountValue);
-//                    currentBrick.setAmount(newBrickAmountValue);
-//
-//                    break;
-//                case ("mSeal"):
-//                    Log.d(TAG, "firebaseAdapter: Seal: " + editTextAmount);
-//                    break;
-//                case ("mProduce"):
-//                    Log.d(TAG, "firebaseAdapter: Produce: " + editTextAmount);
-//                    break;
-//                case ("m2Class"):
-//                    Log.d(TAG, "firebaseAdapter: 2.Class: " + editTextAmount);
-//                    break;
-//
-//                default:
-//                    Log.d(TAG, "firebaseAdapter: Error!: " + editTextAmount);
-//                    break;
-//            }
             notifyItemChanged(position);
 
             itemView.clearFocus();
             InputMethodManager imm = (InputMethodManager) itemView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
 
-//            InputMethodManager inputManager = (InputMethodManager) INPUT_METHOD_SERVICE;
-//            Android.Views.InputMethods;
-//            InputMethodManager imm = getSystemService(INPUT_METHOD_SERVICE);
-//            InputMethodManager.HIDE_IMPLICIT_ONLY;
-//            mAmountEditText.getText().clear();
+
         }
 
         void writeNewBrickAmount(int newBrickAmount, BrickModel currentBrick){

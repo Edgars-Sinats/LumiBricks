@@ -53,7 +53,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     Boolean abooleanOrder;
 
 
-
     interface ManufactureListener {
 
         void onManufacture(Manufacture manufacture);
@@ -89,7 +88,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             dismiss();
         }
 
-
         mBrickTypeSpinner = mRootView.findViewById(R.id.spinnerBrickItemType);
         mBrickHeightSpinner = mRootView.findViewById(R.id.spinnerBrickItemHeight);
         mBrickColorSpinner = mRootView.findViewById(R.id.spinnerBrickItemColor);
@@ -102,8 +100,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             mRootView.findViewById(R.id.buttonManufacture).setOnClickListener(this);
             mRootView.findViewById(R.id.buttonOrder).setVisibility(View.INVISIBLE);
             abooleanOrder = false;
-
-
 
         }else if(buttonActivityPressed.equals( "brick_navigation_order" )) {
             mRootView.findViewById(R.id.buttonOrder).setOnClickListener(this);
@@ -130,7 +126,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         }else {
             mBrickQualitySwitch.setText(R.string.brick_1Class);
             mBrickQualityImage.setImageResource(R.drawable.ic_1_class_black_24dp);
-
         }
 
         List<String> lines2 = Arrays.asList(getResources().getStringArray(R.array.brick_color));
@@ -271,7 +266,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         final Map<String, Object> brickW2 = new HashMap<>();
         brickW2.put(fireBrickName, updatedAmount);
 
-        //If document may don`t exist(Only order case)
+        //If document may don`t exist(Only order case-> DocRef: order)
         if(abooleanOrder){
             documentReference.set(brickW2, SetOptions.merge());
         }
