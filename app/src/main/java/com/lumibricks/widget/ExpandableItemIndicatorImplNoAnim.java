@@ -14,17 +14,18 @@
  *    limitations under the License.
  */
 
-package com.h6ah4i.android.example.advrecyclerview.common.widget;
+package com.lumibricks.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.h6ah4i.android.example.advrecyclerview.R;
-
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import com.lumibricks.R;
+
 
 class ExpandableItemIndicatorImplNoAnim extends ExpandableItemIndicator.Impl {
     private AppCompatImageView mImageView;

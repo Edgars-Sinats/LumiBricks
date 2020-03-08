@@ -15,17 +15,21 @@ public class Manufacture {
     private String color;
     private String lumi;
     private String quality;
-    private String amount;
+    private Double amount;
+    private Double price;
+    private String sellType;
 
     public Manufacture() {    }
 
-    public Manufacture(String brick, String height, String color, String lumi, String quality, String amount) {
+    public Manufacture(String brick, String height, String color, String lumi, String quality, Double amount, Double price, String sellType) {
         this.brick = brick;
         this.height = height;
         this.color = color;
         this.lumi = lumi;
         this.quality = quality;
         this.amount = amount;
+        this.price = price;
+        this.sellType = sellType;
     }
 
     public static Manufacture getDefault(){
@@ -74,11 +78,27 @@ public class Manufacture {
         this.quality = quality;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getSellType() {
+        return sellType;
+    }
+
+    public void setSellType(String sellType) {
+        this.sellType = sellType;
     }
 }

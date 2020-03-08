@@ -28,9 +28,9 @@
                 android:background="#757575"
                 android:scaleType="centerCrop"
                 android:clickable="true"
-                android:focusable="true" />
-            <!--        android:src="@drawable/pils1"-->
+                android:focusable="true"
 
+                />
 
             <TextView
                 android:id="@+id/BrickItemName"
@@ -50,11 +50,11 @@
 
             <ImageView
                 android:id="@+id/brickItemAmountImage"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:background="#757575"
                 android:layout_marginBottom="4dp"
-                android:scaleType="centerCrop"
                 android:layout_below="@+id/BrickItemName"
                 android:layout_alignStart="@id/BrickItemName"
                 android:src="@drawable/ic_brick_amount_black_24dp"/>
@@ -63,38 +63,38 @@
                 android:id="@+id/brickItemAmountText"
                 style="@style/AppTheme.Body1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_height="26dp"
                 android:layout_alignBottom="@id/brickItemAmountImage"
                 android:layout_alignTop="@id/brickItemAmountImage"
                 android:layout_toEndOf="@id/brickItemAmountImage"
                 android:layout_marginStart="4dp"
-                android:gravity="center_vertical"
                 android:clickable="true"
                 android:text="@string/brick_amount"
                 android:focusable="true" />
 
 
-            <ImageView
-                android:id="@+id/brickItemHeightImage"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="#757575"
-                android:scaleType="centerCrop"
-                android:layout_below="@+id/brickItemAmountImage"
-                android:layout_alignStart="@id/brickItemAmountImage"
-                android:src="@drawable/ic_brick_height_6_black_24dp"/>
+<!--            <ImageView-->
+<!--                android:id="@+id/brickItemHeightImage"-->
+<!--                android:layout_width="16dp"-->
+<!--                android:layout_height="16dp"-->
+<!--                android:background="#757575"-->
+<!--                android:scaleType="centerCrop"-->
+<!--                android:layout_below="@+id/brickItemAmountImage"-->
+<!--                android:layout_alignStart="@id/brickItemAmountImage"-->
+<!--                android:src="@drawable/ic_brick_height_6_black_24dp"/>-->
 
-            <TextView
-                android:id="@+id/brickItemHeightText"
-                style="@style/AppTheme.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/brickItemHeightImage"
-                android:layout_alignTop="@id/brickItemHeightImage"
-                android:layout_toEndOf="@id/brickItemHeightImage"
-                android:layout_marginStart="4dp"
-                android:gravity="center"
-                android:text="@string/brick_height"/>
+<!--            <TextView-->
+<!--                android:id="@+id/brickItemHeightText"-->
+<!--                style="@style/AppTheme.Body1"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignBottom="@id/brickItemHeightImage"-->
+<!--                android:layout_alignTop="@id/brickItemHeightImage"-->
+<!--                android:layout_toEndOf="@id/brickItemHeightImage"-->
+<!--                android:layout_marginStart="4dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/brick_height"/>-->
 
             <ImageView
                 android:id="@+id/brickItemEditImage"
@@ -133,6 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/brickItemImageDelete"
+                android:layout_alignEnd="@+id/brickItemImageDelete"
                 android:layout_below="@+id/brickItemImageDelete"
                 android:ellipsize="end"
 

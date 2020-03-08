@@ -6,7 +6,10 @@
 
 
 
+
     <string name="brick_amount">Daudzums</string>
+    <string name="brick_sq_meters">Metri^2</string>
+    <string name="brick_price">Cena</string>
     <string name="brick_size">Izmērs: 100x200(mm)</string>
     <string name="brick_height">Augstums: X(mm)</string>
     <string name="brick_quantity">Daudzums (gb)</string>
@@ -14,9 +17,10 @@
     <string name="brick_primary_quantity">1. Šķira: </string>
     <string name="brick_color">Krāsa: </string>
     <string name="order_brick">Pasūtīt </string>
+    <string name="brick_order_address">Adrese </string>
 
         <!--    4. Option for brick in warehouse-->
-    <string name="destroy_brick">Likvidēt </string>
+    <string name="destroy_brick">Dzēst </string>
     <string name="sold_brick">Pārdot </string>
     <string name="produce_brick">Ražot </string>
     <string name="brick_2Class">2.Šķira</string>
@@ -49,7 +53,14 @@
     <string name="height_5">150</string>
     <string name="users">lietotāji</string>
     <string name="setting">iestatījumi</string>
-
+    <string name="euroTogether">Kopā</string>
+    <string name="palettes">Paletes</string>
+    <string name="transport">Transports</string>
+    <string name="brick_order_price">Summa</string>
+    <string name="lumi_order">Pasūtījums</string>
+    <string name="brick_name">Bruģa nosaukums</string>
+    <string name="brick_unit">unit</string>
+    <string name="gb">gb</string>
 
     <!--    <item>@string/value_brick_types</item>-->
 <!--    If changed order in array(first 4 items), than need to change MainActivity.setBrickImage __else if(){}__ statement  -->
@@ -58,15 +69,16 @@
         <item>Nast</item>
         <item>Prizma</item>
         <item>Asorti</item>
-        <item>Plāksne300x300</item>
         <item>Mozaīka</item>
         <item>Nast-G</item>
         <item>Sigma-8</item>
+
         <item>TAVR(Kauls)</item>
         <item>Nast-8-puse</item>
         <item>Nast-8-mini</item>
         <item>Konuss-1</item>
         <item>Konuss-2</item>
+        <item>Plāksne300x300</item>
         <item>Plāksne-400x500</item>
         <item>Plāksne-450x300</item>
         <item>Plāksne750x300</item>
@@ -78,16 +90,7 @@
     <!--        <item>Nast 6</item>-->
     <!--        <item>Prizma 6</item>-->
 
-<!--    <item>@string/value_brick_height</item>-->
-    <string-array name="brick_height">
 
-        <item>@string/height_1</item>
-        <item>@string/height_2</item>
-        <item>@string/height_3</item>
-        <item>@string/height_4</item>
-        <item>@string/height_5</item>
-
-    </string-array>
 
 <!--    <item>@string/value_brick_color</item>-->
     <string-array name="brick_color">
@@ -103,7 +106,6 @@
 
     </string-array>
 
-
 <!--    <item>@string/value_brick_lumi</item>-->
     <string-array name="brick_lumi">
 
@@ -113,5 +115,30 @@
 
     </string-array>
 
+    <!--    <item>@string/value_brick_height</item>-->
+    <string-array name="brick_height">
+        <item>@string/height_1</item>
+        <item>@string/height_2</item>
+        <item>@string/height_3</item>
+        <item>@string/height_4</item>
+        <item>@string/height_5</item>
+    </string-array>
+
+    <string-array name="brick_height1">
+        <item>@string/height_1</item>
+        <item>@string/height_2</item>
+        <item>@string/height_3</item>
+    </string-array>
+
+    <string-array name="brick_height2">
+        <item>@string/height_3</item>
+        <item>@string/height_4</item>
+        <item>@string/height_5</item>
+    </string-array>
+
+    <string-array name="brick_height3">
+        <item>@string/height_4</item>
+        <item>@string/height_5</item>
+    </string-array>
 
 </resources>

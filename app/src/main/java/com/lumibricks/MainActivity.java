@@ -7,6 +7,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -26,6 +30,7 @@ import com.lumibricks.adapter.BrickAdapter;
 import com.lumibricks.adapter.FirestoreAdapter;
 import com.lumibricks.model.BrickModel;
 import com.lumibricks.model.Manufacture;
+import com.lumibricks.order_list.AddRemoveExpandableExampleActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,10 +53,8 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseFirestore mFirestore;
     private DocumentReference mWarehauseRef;
     private DocumentReference mWarehauseRefTest;
+    private FloatingActionButton floatingUpdateButton;
     private Manufacture newManufactureObject;
-
-
-
 
     private BrickAdapter mBrickAdapter;
     private RecyclerView.Adapter mAdapter;
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
 //        mFrameLayout
         mButtonRemove = findViewById(R.id.buttonClearFilter);
         mFilterBar = findViewById(R.id.filterBar);
+        floatingUpdateButton = findViewById(R.id.floatingUpload);
 
 //        mBricksRecycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -108,19 +112,98 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+//        checkIfUploadTrue();
+
         //TODO make floating button when brickArrayList has been changed.
         // FloatingButton pushToBricksTOFirestore;
         //Make insert in database with new brickAdapter
         mButtonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertDocInFirestore("s");
+                Intent intent = new Intent(v.getContext(), AddRemoveExpandableExampleActivity.class);
+                startActivity(intent);//                insertDocInFirestore("s");
                 //TODO will create update whit new document
+            }
+        });
+
+        floatingUpdateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateFirestore();
+                floatingUpdateButton.hide();
 
             }
         });
 
+    }
 
+    private void updateFirestore() {
+        Integer brickItemValue;
+        String fullBrickName;
+        String transformedFullBrickName;
+        int brickListSize = brickArrayList.size();
+
+        final Map<String, Object> brickW3 = new HashMap<>();
+
+        for (int i =0; i<brickListSize; i++){
+            fullBrickName = brickArrayList.get(i).getBrickName();
+//            transformedFullBrickName = fullBrickName;
+            transformedFullBrickName = fullBrickName.replace(" ", "_");
+            brickItemValue = Integer.parseInt(brickArrayList.get(i).getAmount());
+
+            //Do not push data if amount is 0 (continue)
+            if (brickItemValue.equals(0)){
+                Log.d(TAG, "updateFirestore: value0 true!!!\n\n:" + brickItemValue);
+                continue;
+            }
+            Log.d(TAG, "updateFirestore: new Brick\n\n: " + brickItemValue);
+            brickW3.put(transformedFullBrickName, brickItemValue);
+
+        }
+
+
+
+        mWarehauseRef.set(brickW3).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFail: e:\n" + e);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuc: brickW3 created 6.0:  " + brickW3);
+            }
+        });
+
+    }
+
+    public void insertDocInFirestore(String amount){
+        Integer brickItemValue;
+        String fullBrickName;
+        int brickListSize = brickArrayList.size();
+
+        final Map<String, Object> brickW2 = new HashMap<>();
+
+        for (int i =0; i<brickListSize; i++){
+            fullBrickName = brickArrayList.get(i).getBrickName();
+            brickItemValue = Integer.parseInt(brickArrayList.get(i).getAmount());
+            brickW2.put(fullBrickName, brickItemValue);
+        }
+
+
+
+
+        mWarehauseRefTest.set(brickW2).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFail: e:\n" + e);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuc: brickW2 created 5.0:  " + brickW2);
+            }
+        });
     }
 
     private void deleteRow(int position) {
@@ -201,34 +284,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    public void insertDocInFirestore(String amount){
-        Integer brickItemValue;
-        String fullBrickName;
-        int brickListSize = brickArrayList.size();
 
-        final Map<String, Object> brickW2 = new HashMap<>();
-
-        for (int i =0; i<brickListSize; i++){
-            fullBrickName = brickArrayList.get(i).getBrickName();
-            brickItemValue = Integer.parseInt(brickArrayList.get(i).getAmount());
-
-            brickW2.put(fullBrickName, brickItemValue);
-
-        }
-
-
-        mWarehauseRefTest.set(brickW2).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFail: e:\n" + e);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuc: brickW2 created 5.0:  " + brickW2);
-            }
-        });
-    }
 
     public void processDocument(DocumentSnapshot brickDoc){
 
@@ -258,9 +314,10 @@ public class MainActivity extends AppCompatActivity implements
             String newKey;
 
 //            trasformedKey = key.split("\\_");
-            trasformedKey = key.split(Pattern.quote("_"));
+            //.testDoc
+//            trasformedKey = key.split(Pattern.quote(" ")) ;
+            trasformedKey = key.split(Pattern.quote("_")) ;
             Log.d(TAG, "TransformedKey: " + trasformedKey);
-
 
             newKey = trasformedKey[0] + " " + trasformedKey[1] + " " + trasformedKey[2] + " " + trasformedKey[3] + " " + trasformedKey[4];
             Log.d(TAG, "c: " + newKey);
@@ -290,27 +347,39 @@ public class MainActivity extends AppCompatActivity implements
 
 //        mAdapter = new BrickAdapter(brickArrayList);
         mBrickAdapter = new BrickAdapter(brickArrayList);
+
         mBricksRecycler.setLayoutManager(mLayoutManager);
 
         mBricksRecycler.setAdapter(mBrickAdapter);
 
+
         mBrickAdapter.setOnItemClickListener(new BrickAdapter.OnItemclickListener() {
             @Override
             public void onItemClick(int position) {
-//                changeItem(position, R.drawable.ic_brick_fence_black_24dp);
                 Log.d(TAG, "onItemClick: ");
-            }
 
+            }
 
             @Override
             public void onEditClick(int position) {
             }
 
             @Override
-            public void onSellClick(int position, int amount) {
+            public void onChange(int chan) {
+                boolean a = mBrickAdapter.requestFireUpdate;
+                if(a){
+                    floatingUpdateButton.show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        brickArrayList.get(chan).
 
+                    }
+
+                }else {
+                    floatingUpdateButton.hide();
+                }
             }
         });
+
 
 
 

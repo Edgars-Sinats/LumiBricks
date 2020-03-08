@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.h6ah4i.android.example.advrecyclerview.common.widget;
+package com.lumibricks.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -24,10 +24,10 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.h6ah4i.android.example.advrecyclerview.R;
-
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import com.lumibricks.R;
 
 // NOTE: AnimatedVectorDrawableCompat works on API level 11+
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
