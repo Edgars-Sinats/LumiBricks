@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0E0E0"
+    tools:context=".MainActivity">
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme"
+        app:logo="@drawable/ic_brick_produce_black_24dp"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+        app:title="@string/app_name"
+        app:titleMarginStart="24dp"
+        app:titleTextColor="@android:color/white" />
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linLayButtons"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_below="@id/toolbar"-->
+
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/buttonMainManufacture"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            style="@style/ThemeOverlay.AppCompat.DayNight"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/produce_brick"-->
+<!--            />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/buttonMainOrder"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            style="@style/ThemeOverlay.AppCompat.Dark"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/order_brick"-->
+<!--            />-->
+
+<!--    </LinearLayout>-->
+
+
+
+    <FrameLayout
+        android:id="@+id/brickTypeNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorButtonNormal"
+        android:clickable="true"
+        android:layout_below="@id/toolbar"
+        android:focusable="true">
+    <!--        app:popupTheme="@style/AppTheme.PopupOverlay"-->
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/filterBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:elevation="12dp"
+            android:foreground="?attr/selectableItemBackground">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/buttonFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:tint="@color/greySecondary"
+                    app:srcCompat="@drawable/ic_brick_lumi_green_24dp" />
+
+                <LinearLayout
+                    android:id="@+id/textCurrentSearchContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@+id/buttonFilter"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/textCurrentSearch"
+                        style="@style/AppTheme.Body1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/height_1"
+                        android:textColor="@color/greySecondary"
+                        tools:text="Filter" />
+
+                    <TextView
+                        android:id="@+id/textCurrentSortBy"
+                        style="@style/AppTheme.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/brick_fence"
+                        android:textColor="@color/colorPrimary" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/buttonClearFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:tint="@color/greySecondary"
+                    app:srcCompat="@drawable/ic_brick_produce_black_24dp" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
+    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/brickTypeNavigation"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:popupTheme="@style/AppTheme.PopupOverlay"-->
+<!--        android:background="?attr/colorButtonNormal"-->
+<!--        android:layout_below="@id/toolbar"-->
+<!--        app:menu="@menu/brick_type_menu"/>-->
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerRestaurants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_nav_view"
+        android:layout_below="@+id/brickTypeNavigation"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="-4dp"
+        android:background="@android:color/white"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/list_item_brugis" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/recyclerRestaurants"
+
+        android:layout_gravity="bottom|start"
+        android:background="@color/colorAccent"
+        android:layout_margin="@android:dimen/app_icon_size"
+        android:visibility="invisible"
+        android:src="@drawable/ic_cloud_upload_black_24dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorButtonNormal"
+        app:menu="@menu/brick_menu"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+</RelativeLayout>

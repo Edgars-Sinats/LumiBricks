@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/brick_toolbar_users"
+        android:icon="@drawable/ic_brick_produce_black_24dp"
+        android:title="@string/users"/>
+
+    <item
+        android:id="@+id/brick_toolbar_orders"
+        android:icon="@drawable/ic_brick_sold_black_24dp"
+        android:title="@string/order_brick"/>
+
+    <item
+        android:id="@+id/brick_toolbar_setting"
+        android:icon="@drawable/ic_1_class_black_24dp"
+        android:title="@string/setting"/>
+
+</menu>

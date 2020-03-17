@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:animateLayoutChanges="true"
+    style="@style/Widget.MaterialComponents.CardView"
+
+    app:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:id="@+id/relLay_list_item_brick"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/brickItemOrderName"
+            style="@style/AppTheme.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="@string/value_brick_types" />
+
+        <ImageView
+            android:id="@+id/brickItemOrderImage"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="#757575"
+            android:scaleType="centerCrop"
+            android:layout_below="@+id/brickItemOrderName"
+            android:clickable="true"
+            android:focusable="true" />
+
+
+
+        <ImageView
+            android:id="@+id/brickItemOrderAmountImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="#757575"
+            android:layout_margin="4dp"
+            android:layout_alignTop="@+id/brickItemOrderImage"
+            android:layout_toEndOf="@+id/brickItemOrderImage"
+            android:src="@drawable/ic_brick_amount_black_24dp"/>
+
+        <TextView
+            android:id="@+id/brickItemOrderAmountText"
+            style="@style/AppTheme.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignTop="@id/brickItemOrderAmountImage"
+            android:layout_toEndOf="@id/brickItemOrderAmountImage"
+            android:layout_marginStart="4dp"
+            android:gravity="center_vertical"
+            android:text="@string/brick_amount"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/brickItemOrderPriceText"
+            style="@style/AppTheme.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignTop="@id/brickItemOrderAmountImage"
+            android:layout_toStartOf="@+id/brickItemOrderPriceImage"
+            android:layout_marginEnd="4dp"
+            android:gravity="center"
+            android:text="@string/brick_price" />
+
+        <ImageView
+            android:id="@+id/brickItemOrderPriceImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignTop="@id/brickItemOrderAmountImage"
+            android:layout_marginStart="4dp"
+            android:layout_alignParentEnd="true"
+            android:background="#757575"
+            android:src="@drawable/ic_euro_symbol_black_24dp" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

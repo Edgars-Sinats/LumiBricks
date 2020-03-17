@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/filters_form"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        style="@style/AppTheme.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/header_filters" />
+
+    <!-- Food Type -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_brick_type"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_type_black_24dp"
+            android:contentDescription="@string/value_brick_types" />
+
+        <Spinner
+            android:id="@+id/spinnerBrickItemType"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/icon_brick_type"
+             />
+<!--        android:entries="@array/brick_type"-->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconBrickItemColor"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_color_fill_black_24dp"
+            android:contentDescription="@string/brick_color" />
+
+        <Spinner
+            android:id="@+id/spinnerBrickItemColor"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconBrickItemColor"
+            android:entries="@array/brick_color" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconBrickItemLumi"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_lumi_green_24dp"
+            android:contentDescription="@string/value_brick_lumi" />
+
+        <Spinner
+            android:id="@+id/spinnerBrickItemLumi"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconBrickItemLumi"
+            android:entries="@array/brick_lumi" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconBrickItemQuality"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_1_class_black_24dp"
+            android:contentDescription="@string/value_brick_quality"
+            />
+
+        <Switch
+            android:id="@+id/switchBrickItemQuality"
+            style="@style/AppTheme.FilterSwitch"
+            android:layout_toEndOf="@+id/iconBrickItemQuality"
+            android:text="@string/brick_2Class"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconBrickItemCount"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextBrickItemCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconBrickItemCount"
+            android:layout_toStartOf="@+id/buttonBrickItemInputOption"
+            android:hint="@string/brick_insert_amount"
+            android:inputType="number"
+             />
+<!--        android:text="@string/brick_fake_amount"-->
+
+        <Button
+            android:id="@+id/buttonBrickItemInputOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <!-- Cancel and apply buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonOrder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableBottom="@drawable/ic_shopping_cart_black_24dp"
+            android:text="@string/order_brick"
+            />
+
+        <Button
+            android:id="@+id/buttonCancel"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textColor="@color/greySecondary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+
+        <Button
+            android:id="@+id/buttonManufacture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableBottom="@drawable/ic_brick_produce_black_24dp"
+            android:text="@string/produce_brick" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_height"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewConstant_BrickSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/brick_order_price" />
+
+        <TextView
+            android:id="@+id/textViewBrickSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/textViewConstant_BrickSum"
+            android:gravity="center"
+            android:text="@string/euroTogether" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewConstant_OrderSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/euroTogether" />
+
+        <TextView
+            android:id="@+id/textViewOrderSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/textViewConstant_OrderSum"
+            android:gravity="center"
+            android:text="@string/euroTogether" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
+
+<!--Height line-->
+
+<!--<RelativeLayout-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content">-->
+
+<!--<ImageView-->
+<!--    android:id="@+id/iconBrickItemHeight"-->
+<!--    style="@style/AppTheme.FilterIcon"-->
+<!--    android:layout_centerVertical="true"-->
+<!--    android:tint="@color/greySecondary"-->
+<!--    app:srcCompat="@drawable/ic_brick_height_8_black_24dp"-->
+<!--    android:contentDescription="@string/value_brick_height" />-->
+
+<!--<Spinner-->
+<!--    android:id="@+id/spinnerBrickItemHeight"-->
+<!--    style="@style/AppTheme.FilterSpinner"-->
+<!--    android:layout_centerVertical="true"-->
+<!--    android:layout_toEndOf="@+id/iconBrickItemHeight"-->
+<!--    android:entries="@array/brick_height" />-->
+
+<!--</RelativeLayout>-->
