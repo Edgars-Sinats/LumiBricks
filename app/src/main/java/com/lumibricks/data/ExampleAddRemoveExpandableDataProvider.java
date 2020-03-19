@@ -142,7 +142,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         }
         Double totalPrice = 0.0;
 
-        for (int adressOrder = start; adressOrder < end; adressOrder++){
+        for (int adressOrder = start; adressOrder <= end; adressOrder++){
 
             size = mData.get(adressOrder).second.size();
 

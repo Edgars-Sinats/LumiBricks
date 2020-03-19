@@ -65,6 +65,8 @@ import com.lumibricks.utils.DrawableUtils;
 import com.lumibricks.utils.ViewUtils;
 import com.lumibricks.widget.ExpandableItemIndicator;
 
+import java.util.logging.ErrorManager;
+
 class AddRemoveExpandableExampleAdapter
         extends AbstractExpandableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>, FilterDialogFragment.ManufactureListener {
@@ -436,11 +438,14 @@ class AddRemoveExpandableExampleAdapter
 
         int start = findFirstSectionItem(gropPosition);
         int last = findLastSectionItem(gropPosition);
-        Double a=mProvider.getChildPriceSum(start, last);
-        String b = String.valueOf(a);
+        Log.i(TAG, "onBindSectionFooterGroupViewHolder: start: " +start + "\nlast: " + last);
+        Double groupPriceBricks =mProvider.getChildPriceSum(start, last);
+        String b = String.valueOf(groupPriceBricks);
         holder.mFooterTextOrderPrice.setText(b);
+        Log.i(TAG, "onBindSectionFooterGroupViewHolder: b" + groupPriceBricks);
 
 
+        //hidden layout
         int ab = mProvider.getGroupCount();
         String sad= String.valueOf(ab);
         holder.mFooterTextView2Info.setText(sad);
@@ -449,12 +454,18 @@ class AddRemoveExpandableExampleAdapter
     private void updateOrderSum(int a){
         int start = findFirstSectionItem(whenNewBrickGroupPosition);
         int end = findLastSectionItem(a);
+        Log.i(TAG, "updateOrderSum: start: " + start + "\nend: " + end);
         Double groupPriceBricks = mProvider.getChildPriceSum(start, end);
-        AbstractAddRemoveExpandableDataProvider.GroupData gD = mProvider.getGroupItem(a);
-        gD.setGroupPrice(groupPriceBricks);
+        AbstractAddRemoveExpandableDataProvider.GroupData gD = mProvider.getGroupItem(end+1);
+        if (gD.isSectionFooter()){
+            gD.setGroupPrice(groupPriceBricks);
+        }else {
+            Log.i(TAG, "updateOrderSum: groupPrice is not set  in footer");
+        }
+        Log.i(TAG, "updateOrderSum: " + groupPriceBricks);
 
 //        mExpandableItemManager.notifyGroupItemChanged(a+1);
-        mExpandableItemManager.notifyGroupItemChanged(end);
+        mExpandableItemManager.notifyGroupItemChanged(end+1);
 
 
     }
@@ -828,6 +839,10 @@ class AddRemoveExpandableExampleAdapter
         //groupPosition == isSectionHed
         mProvider.addGroupItem(groupPosition + 1);
         mExpandableItemManager.notifyGroupItemInserted(groupPosition + 1);
+
+        //Create new Brick item when new address is added.
+        whenNewBrickGroupPosition = groupPosition;
+        openDialogFragmentNewBrick();
     }
 
 
@@ -1100,14 +1115,16 @@ class AddRemoveExpandableExampleAdapter
             throw new IllegalStateException("section item is expected");
         }
 
-        //TODO -1(-2) mean count start from 1 and index from 0?? Or not
-        //-2 for count(-1) + (-1) for item.isSectionFooter()
-        final int lastViewIndex = getGroupCount() - 1;
-        int lastSectionIndex = getGroupCount() - 1;
-        lastSectionIndex=position;
+        int lastSectionIndex = position;
+
+        //onBindSectionFooterGroupViewHolder needs find last iem in order to calculate value of order
+        if (item.isSectionFooter()){
+            lastSectionIndex = position-1;
+            return lastSectionIndex;
+        }
+
+        Log.i(TAG, "findLastSectionItem: mProvider.getGroupItem(position+1):" + mProvider.getGroupItem(position));
         while (position < getGroupCount()-1 ) {
-            Log.i(TAG, "findLastSectionItem: position WHILE:" + position);
-            Log.i(TAG, "findLastSectionItem: mProvider.getGroupItem(position+1):" + mProvider.getGroupItem(position+1));
             if (mProvider.getGroupItem(position+1).isSectionFooter()){
                 break;
             }
