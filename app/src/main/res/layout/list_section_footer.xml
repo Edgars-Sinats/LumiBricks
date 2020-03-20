@@ -68,51 +68,98 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/footerTextView2"
+                android:id="@+id/footerTextViewNoPVN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Summa bez PVN (EURO) "/>
 
             <TextView
-                android:id="@+id/footerTextView2Info"
+                android:id="@+id/footerTextViewNoPvnNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_vertical_margin"
-                android:layout_alignTop="@id/footerTextView2Info"
-                android:layout_toEndOf="@id/footerTextView2"
+                android:layout_toEndOf="@id/footerTextViewNoPVN"
                 android:hint="info"/>
 
             <TextView
-                android:id="@+id/footerTextView3"
+                android:id="@+id/footerTextViewPVN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/footerTextView2"
+                android:layout_below="@id/footerTextViewNoPVN"
                 android:text="PVN(21%): "/>
 
             <TextView
-                android:id="@+id/footerTextView3Info"
+                android:id="@+id/footerTextViewPVNNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_vertical_margin"
-                android:layout_alignTop="@id/footerTextView3"
-                android:layout_toEndOf="@id/footerTextView3"
+                android:layout_alignTop="@id/footerTextViewPVN"
+                android:layout_toEndOf="@id/footerTextViewPVN"
                 android:hint="info"/>
 
             <TextView
-                android:id="@+id/footerTextView4"
+                android:id="@+id/footerTextPVN_Sum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/footerTextView3"
+                android:layout_below="@id/footerTextViewPVN"
                 android:text="Summa apaksai "/>
 
             <TextView
-                android:id="@+id/footerTextView4Info"
+                android:id="@+id/footerTextViewPVN_SUMNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_vertical_margin"
-                android:layout_alignTop="@id/footerTextView4"
-                android:layout_toEndOf="@id/footerTextView4"
+                android:layout_alignTop="@id/footerTextPVN_Sum"
+                android:layout_toEndOf="@id/footerTextPVN_Sum"
                 android:hint="info"/>
+
+
+<!--            Extra info-->
+            <TextView
+                android:id="@+id/footerTextViewPalettes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="  palettes "/>
+
+            <TextView
+                android:id="@+id/footerTextViewPaletesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/footerTextViewPalettes"
+                android:hint="skaits "/>
+
+            <TextView
+                android:id="@+id/footerTextViewExtra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/footerTextViewPalettes"
+                android:text="  extra "/>
+
+            <TextView
+                android:id="@+id/footerTextViewExtraCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/footerTextViewExtra"
+                android:layout_below="@+id/footerTextViewPaletesCount"
+                android:hint="skaits "/>
+
+            <TextView
+                android:id="@+id/footerTextViewExtra2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/footerTextViewExtra"
+                android:text="  extra2 "/>
+
+            <TextView
+                android:id="@+id/footerTextViewExtraCount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/footerTextViewExtra2"
+                android:layout_below="@+id/footerTextViewExtra"
+                android:hint="skaits "/>
 
         </RelativeLayout>
 

@@ -66,6 +66,8 @@
     <string name="dialog_title_edit_address">Addrese</string>
     <string name="dialog_message_edit_peron">Rediģēt klieentu</string>
     <string name="dialog_title_edit_peron">Klients</string>
+    <string name="dialog_message_new_peron">Jaunais klieenta vārds</string>
+    <string name="dialog_message_new_address">Jaunā adrese</string>
 
     <!--    <item>@string/value_brick_types</item>-->
 <!--    If changed order in array(first 4 items), than need to change MainActivity.setBrickImage __else if(){}__ statement  -->

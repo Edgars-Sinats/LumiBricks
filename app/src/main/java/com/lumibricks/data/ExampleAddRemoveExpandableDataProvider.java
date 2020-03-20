@@ -328,7 +328,6 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 //        private long mNextChildId;
 
 
-
         ConcreteGroupData(long id, boolean isSectionHeader, boolean isSectionFooter, Double groupPrice, String text) {
             mId = id;
             mText = text;
@@ -411,7 +410,6 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
             mUnit = unit;
             mAmount = amount;
             mPrice = price;
-
         }
 
         @Override

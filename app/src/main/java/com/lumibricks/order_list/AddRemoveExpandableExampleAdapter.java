@@ -17,12 +17,10 @@
 package com.lumibricks.order_list;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +29,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +40,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.h6ah4i.android.widget.advrecyclerview.expandable.ChildPositionItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableDraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemState;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemViewHolder;
@@ -53,19 +47,14 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.GroupPositionItemDra
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.lumibricks.FilterDialogFragment;
-import com.lumibricks.MainActivity;
 import com.lumibricks.R;
 import com.lumibricks.data.AbstractAddRemoveExpandableDataProvider;
-import com.lumibricks.data.AbstractExpandableDataProvider;
 import com.lumibricks.model.Manufacture;
 import com.lumibricks.utils.DrawableUtils;
 import com.lumibricks.utils.ViewUtils;
 import com.lumibricks.widget.ExpandableItemIndicator;
-
-import java.util.logging.ErrorManager;
 
 class AddRemoveExpandableExampleAdapter
         extends AbstractExpandableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>
@@ -159,22 +148,23 @@ class AddRemoveExpandableExampleAdapter
 
     public static class MyGroupViewHolder extends MyBaseViewHolder {
         public ExpandableItemIndicator mIndicator;
-//        public EditText mButtonCargoAddress;
-//                public TextView mTextEuroTogether;
+
         public ImageButton mImageAddItem;
         public ImageButton mImageEditAddress;
         public ImageButton mImageAddAddress;
         public ImageButton mImageEditClient;
 
         public RelativeLayout mRelativeLayoutInfo;
+        public RelativeLayout mRelativeLayoutFooterInfo;
         public TextView mFooterTextOrderPrice;
-        public TextView mFooterTextView2Info;
-//        public TextView mFooterTextView3Info;
-//        public TextView mFooterTextView4Info;
 
-//        public TextView mTextTransport;
-//        public TextView mTextPallettes;
-//        public TextView mTextEuroTogetherPalettes;
+        public TextView mFooterTextViewSum;
+        public TextView mFooterTextViewPvn;
+        public TextView mFooterTextViewPvn_Sum;
+
+        public TextView mTextPalettes;
+        public TextView mTextTransport;
+        public TextView mTextExtra;
 
         public MyGroupViewHolder(View v, View.OnClickListener clickListener) {
             super(v, clickListener);
@@ -188,12 +178,16 @@ class AddRemoveExpandableExampleAdapter
             mImageEditClient = v.findViewById(R.id.image_button_edit_client);
 
             mRelativeLayoutInfo = v.findViewById(R.id.footerRelLayExtraInfo);
+            mRelativeLayoutFooterInfo = v.findViewById(R.id.relLay_footer_main);
 
             mFooterTextOrderPrice = v.findViewById(R.id.footerTextOrderPrice);
-            mFooterTextView2Info =  v.findViewById(R.id.footerTextView2Info);
+            mFooterTextViewSum  =  v.findViewById(R.id.footerTextViewNoPvnNum);
+            mFooterTextViewPvn  =  v.findViewById(R.id.footerTextViewPVNNum);
+            mFooterTextViewPvn_Sum  =  v.findViewById(R.id.footerTextViewPVN_SUMNum);
 
-//            mImageAddItem.setOnClickListener(clickListener);
-//            mContainer.setOnClickListener(clickListener);
+            mTextPalettes = v.findViewById(R.id.footerTextViewPalettes);
+            mTextTransport = v.findViewById(R.id.footerTextViewExtra);
+            mTextExtra = v.findViewById(R.id.footerTextViewExtra2);
 
 //            mButtonChangeTransportUnit = v.findViewById(R.id.button_change_transport_unit);
 //            mButtonchangeUnitPalettes = v.findViewById(R.id.button_change_unit_palettes);
@@ -432,23 +426,32 @@ class AddRemoveExpandableExampleAdapter
     }
 
     private void onBindSectionFooterGroupViewHolder(MyGroupViewHolder holder, int gropPosition){
-        holder.mRelativeLayoutInfo.setVisibility(View.GONE);
+        holder.mRelativeLayoutInfo.setVisibility(View.VISIBLE);
         holder.mRelativeLayoutInfo.setOnClickListener(mItemOnClickListener);
-
+        holder.mRelativeLayoutFooterInfo.setVisibility(View.GONE);
+//        holder.mFooterTextOrderPrice.setText(stringGroupPriceSum);
 
         int start = findFirstSectionItem(gropPosition);
         int last = findLastSectionItem(gropPosition);
         Log.i(TAG, "onBindSectionFooterGroupViewHolder: start: " +start + "\nlast: " + last);
         Double groupPriceBricks =mProvider.getChildPriceSum(start, last);
-        String b = String.valueOf(groupPriceBricks);
-        holder.mFooterTextOrderPrice.setText(b);
-        Log.i(TAG, "onBindSectionFooterGroupViewHolder: b" + groupPriceBricks);
-
 
         //hidden layout
-        int ab = mProvider.getGroupCount();
-        String sad= String.valueOf(ab);
-        holder.mFooterTextView2Info.setText(sad);
+        String stringGroupPriceSum = String.valueOf(groupPriceBricks);
+        String stringGroupPricePvn = String.valueOf(groupPriceBricks*0.21);
+        String stringGroupPriceSum_Pvn = String.valueOf(groupPriceBricks*1.21);
+        holder.mFooterTextViewSum.setText(stringGroupPriceSum);
+        holder.mFooterTextViewPvn.setText(stringGroupPricePvn);
+        holder.mFooterTextViewPvn_Sum.setText(stringGroupPriceSum_Pvn);
+
+        int groupCount = mProvider.getGroupCount();
+        int childCount = mProvider.getChildCount(gropPosition);
+        long id = mProvider.getGroupItem(gropPosition).getGroupId();
+        String gropCount= String.valueOf(groupCount);
+
+        holder.mTextPalettes.setText(gropCount);
+        holder.mTextTransport.setText(String.valueOf(childCount));
+        holder.mTextExtra.setText(String.valueOf(id));
     }
 
     private void updateOrderSum(int a){
@@ -673,13 +676,11 @@ class AddRemoveExpandableExampleAdapter
 //        mExpandableItemManager.notifyChildItemInserted(groupPosition, 0);
 //        mExpandableItemManager.expandGroup(groupPosition);
 
-//        filterDialogFragment.setTargetFragment((Fragment) AddRemoveExpandableExampleFragment.SavedState, 1);
-//        filterDialogFragment.show(get)
-//        Intent intent = new Intent(getActivity(), MainActivity.class);
-//        startActivity(intent);
     }
 
     private void handleOnClickGroupItemEditPerson(final int groupPosition) {
+        //groupPosition == isSectionHed
+        String oldClientName = mProvider.getGroupItem(groupPosition).getText();
         int layoutView = R.layout.dialog_edit_item_text;
         final AlertDialog.Builder builder = new AlertDialog.Builder(AddRemoveExpandableExampleAdapter.this.context);
         AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
@@ -688,10 +689,10 @@ class AddRemoveExpandableExampleAdapter
         // Pass null as the parent view because its going in the dialog layout
         View dialogView = inflater.inflate(layoutView, null);
         final EditText editText = dialogView.findViewById(R.id.username);
-        editText.setHint(R.string.dialog_message_edit_peron);
+        editText.setHint(R.string.dialog_message_new_peron);
         builder.setView(dialogView);
-        builder.setMessage(R.string.dialog_message_edit_peron)
-                .setTitle(R.string.dialog_title_edit_peron);
+        builder.setMessage("Vecais klieenta nosaukums: " + oldClientName)
+                .setTitle(R.string.dialog_message_edit_peron);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -712,13 +713,11 @@ class AddRemoveExpandableExampleAdapter
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-
-        //groupPosition == isSectionHed
-
  //        mExpandableItemManager.notifyGroupItemInserted(groupPosition + 1);
     }
 
     private void handleOnClickGroupItemEditAddress(final int groupPosition){
+        String oldAddress = mProvider.getGroupItem(groupPosition).getText();
         int layoutView = R.layout.dialog_edit_item_text;
         final AlertDialog.Builder builder = new AlertDialog.Builder(AddRemoveExpandableExampleAdapter.this.context);
         AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
@@ -727,18 +726,20 @@ class AddRemoveExpandableExampleAdapter
         // Pass null as the parent view because its going in the dialog layout
         View dialogView = inflater.inflate(layoutView, null);
         final EditText editText = dialogView.findViewById(R.id.username);
-        builder.setView(dialogView);
-//        EditText editText = R.id.username;
 
-        builder.setMessage(R.string.dialog_message_edit_address)
-                .setTitle(R.string.dialog_title_edit_address);
+
+        editText.setHint(R.string.dialog_message_new_address);
+        builder.setView(dialogView);
+        builder.setMessage("Vecā adrese: " + oldAddress)
+                .setTitle(R.string.dialog_message_edit_address);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // User clicked OK button
                 String a = String.valueOf(editText.getText());
                 editedBrickName = a;
-                mProvider.getGroupItem(groupPosition).setText(a);
+                //set new brick name
+                mProvider.getGroupItem(groupPosition).setText(editedBrickName);
                 mExpandableItemManager.notifyGroupItemChanged(groupPosition);
                 dialog.dismiss();
             }
@@ -752,9 +753,6 @@ class AddRemoveExpandableExampleAdapter
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        //set new brick name
-//        mProvider.getGroupItem(groupPosition).setText(editedBrickName);
-//        mExpandableItemManager.notifyGroupItemChanged(groupPosition);
 //        notifyItemChanged(groupPosition);
 //        notifyDataSetChanged();
 //        notify();
@@ -763,7 +761,6 @@ class AddRemoveExpandableExampleAdapter
         //Dialog shown as https://developer.android.com/guide/topics/ui/dialogs#AddingAList
 //        https://developer.android.com/guide/topics/ui/dialogs
         //if choose first item from list ==> create new list item&(save in list + add in current address)
-
     }
 
     private void handleOnClickGroupItemAddChildBottomButton(int groupPosition) {
@@ -794,10 +791,8 @@ class AddRemoveExpandableExampleAdapter
 
     private void handleOnClickGroupItemRemoveChildBottomButton(int groupPosition) {
         int count = mProvider.getChildCount(groupPosition);
-
         if (count > 0) {
             mProvider.removeChildItem(groupPosition, (count - 1));
-
             mExpandableItemManager.notifyChildItemRemoved(groupPosition, (count - 1));
         }
     }
@@ -815,7 +810,6 @@ class AddRemoveExpandableExampleAdapter
             mExpandableItemManager.notifyChildItemRangeRemoved(groupPosition, count - removeCount, removeCount);
         }
     }
-
 
     private void handleOnClickGroupItemContainerView(int groupPosition) {
         // toggle expanded/collapsed
@@ -837,8 +831,9 @@ class AddRemoveExpandableExampleAdapter
     }
     private void handleOnClickGroupItemAddressAdd(int groupPosition) {
         //groupPosition == isSectionHed
-        mProvider.addGroupItem(groupPosition + 1);
-        mExpandableItemManager.notifyGroupItemInserted(groupPosition + 1);
+        groupPosition = groupPosition+1;
+        mProvider.addGroupItem(groupPosition);
+        mExpandableItemManager.notifyGroupItemInserted(groupPosition);
 
         //Create new Brick item when new address is added.
         whenNewBrickGroupPosition = groupPosition;
