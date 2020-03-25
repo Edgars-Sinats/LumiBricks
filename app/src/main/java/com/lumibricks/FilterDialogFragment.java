@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.BLUE;
@@ -57,6 +59,7 @@ import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 import static android.graphics.Color.YELLOW;
 import static com.lumibricks.R.array.brick_lumi;
+import static java.lang.Double.longBitsToDouble;
 import static java.lang.Double.parseDouble;
 
 public class FilterDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -70,8 +73,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     private DocumentReference mOrderRef;
     private Manufacture newManufactureObject;
 
-    private ArrayList<Brick> brickArrayList;
-    private ArrayList<String> brickNames;
+
 //    private ArrayList<String> brickColor;
 //    private ArrayList<String> brickSize;
 //    private ArrayList<String> brickName;
@@ -86,12 +88,27 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
      *  Order details elements:
      */
 
-    private double brickPrice;
-    private double brickPriceTotal;
+    private ArrayList<Brick> brickArrayList;
+    private ArrayList<String> brickNames;
+    private String brickItemName;
+    private int brickIndex;
+    private String sellTypes;
+    private List<String> items;
+    private String mainTypeItem;
+    private String currentTypeItem;
+
+//as
+    private double inputSellPrice = 0;
+
     public double orderPrice = 0.0;
-    private double discount = 0;
+    private double brickPriceTotal;
     private double orderAmount = 1;
-    private double lumiPrice = 0;
+    private double brickPrice;
+    private double brickColorPrice = 0;
+    private double discount = 0;
+//    private double lumiPrice = 0;
+    private double orderPalletes = 0;
+    private double typeCoefficient = 1;
 
     private ManufactureListener mManufactureListener;
 
@@ -112,6 +129,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     private Switch  mBrickQualitySwitch;
     private ImageView mBrickQualityImage;
     private ImageView mBrickColorImage;
+    private ImageView mBrickTypeImage;
     private ImageView mBrickLimiImage;
     private TextView mPriceBrickText;
     private TextView mPriceText;
@@ -144,6 +162,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //        mBrickHeightSpinner = mRootView.findViewById(R.id.spinnerBrickItemHeight);
         mBrickColorSpinner = mRootView.findViewById(R.id.spinnerBrickItemColor);
         mBrickColorImage = mRootView.findViewById(R.id.iconBrickItemColor);
+        mBrickTypeImage = mRootView.findViewById(R.id.icon_brick_type);
         mBrickLumiSpinner = mRootView.findViewById(R.id.spinnerBrickItemLumi);
         mBrickLimiImage = mRootView.findViewById(R.id.iconBrickItemLumi);
         mBrickQualitySwitch = mRootView.findViewById(R.id.switchBrickItemQuality);
@@ -178,6 +197,9 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //        brickHightArrayList = getResources().getStringArray(R.array.brick_height);
         brickColorArrayList = getResources().getStringArray(R.array.brick_color);
         brickLumiArrayList = getResources().getStringArray(brick_lumi);
+        ArrayAdapter<String> adapterBrickColors = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, brickColorArrayList);
+        adapterBrickColors.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mBrickColorSpinner.setAdapter(adapterBrickColors);
 
         if(buttonActivityPressed.equals( "brick_navigation_produce" )) {
             mRootView.findViewById(R.id.buttonManufacture).setOnClickListener(this);
@@ -211,6 +233,43 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //        List<String> arrayList = Collections.singletonList(spinnerList.toString());
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayList);
 
+        mBrickTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                brickItemName = parent.getSelectedItem().toString();
+                brickIndex = brickNames.indexOf(brickItemName);
+
+//                configurateSellType()
+                sellTypes = brickArrayList.get(brickIndex).getSellType();
+                items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
+                mainTypeItem = items.get(0);
+                mBrickInput.setText(items.get(0));
+                setDefault();
+
+
+                //TODO if brickItemName.equals("bord") || brickItemName.equals("apmale"){ show color black & gray} ???
+                if ( brickItemName.equals("TAKTILAS pump") || brickItemName.equals("TAKTILAS line") ){
+                    hideColor("YELLOW");
+                } else if ( brickArrayList.get(brickIndex).getPriceBlack() == 0.0 ) {
+                    hideColor("nan");
+                }else if ( brickArrayList.get(brickIndex).getPriceBlack() != 0  ) {
+                    showColor();
+                }
+
+                //Lumi brick
+                if ( brickArrayList.get(brickIndex).getPriceLumi() == 0 ){
+                    hideLumi();
+                } else {
+                    showLumi();
+                }
+
+                currentTypeItem = mainTypeItem;
+                notifyPriceChange(brickItemName, null, null, null, null, 0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
         mBrickQualitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -223,57 +282,35 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
                     mBrickQualityImage.setImageResource(R.drawable.ic_1_class_black_24dp);
                 }
                 notifyPriceChange(null, null, null, isChecked, null, 0);
-
             }
         });
 
-        mBrickTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String brickItemName = parent.getSelectedItem().toString();
 
-                int brickIndex = brickNames.indexOf(brickItemName);
-                String sellT = brickArrayList.get(brickIndex).getSellType();
-                mBrickInput.setText(sellT);
-                notifyPriceChange(brickItemName, null, null, null, null, 0);
-
-                if ( brickItemName.equals("TAKTILAS pump") || brickItemName.equals("TAKTILAS line") ){
-                    mBrickColorSpinner.setVisibility(View.GONE);
-                } else if ( brickArrayList.get(brickIndex).getPriceColor() == 0 ) {
-                    mBrickColorSpinner.setVisibility(View.GONE);
-                }else if ( brickArrayList.get(brickIndex).getPriceColor() != 0  ) {
-                    mBrickColorSpinner.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
 
         mBrickColorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getSelectedItem().toString();
+                String selectedColor = parent.getSelectedItem().toString();
 
-                if ( item.equals(brickColorArrayList[0]) ) {
+                if ( selectedColor.equals(brickColorArrayList[0]) ) {
                     mBrickColorImage.setBackgroundColor((GRAY));
-                } else if (item.equals(brickColorArrayList[1]) ){
+                } else if (selectedColor.equals(brickColorArrayList[1]) ){
                     mBrickColorImage.setBackgroundColor((GREEN));
-                }else if (item.equals(brickColorArrayList[2]) ){
+                }else if (selectedColor.equals(brickColorArrayList[2]) ){
                     mBrickColorImage.setBackgroundColor((YELLOW));
-                }else if (item.equals(brickColorArrayList[3]) ){
+                }else if (selectedColor.equals(brickColorArrayList[3]) ){
                     mBrickColorImage.setBackgroundColor((MAGENTA));
-                }else if (item.equals(brickColorArrayList[4]) ){
+                }else if (selectedColor.equals(brickColorArrayList[4]) ){
                     mBrickColorImage.setBackgroundColor((RED));
-                }else if (item.equals(brickColorArrayList[5]) ){
+                }else if (selectedColor.equals(brickColorArrayList[5]) ){
                     mBrickColorImage.setBackgroundColor((BLACK));
-                }else if (item.equals(brickColorArrayList[6]) ){
+                }else if (selectedColor.equals(brickColorArrayList[6]) ){
                     mBrickColorImage.setBackgroundColor((DKGRAY));
-                }else if (item.equals(brickColorArrayList[7]) ){
+                }else if (selectedColor.equals(brickColorArrayList[7]) ){
                     mBrickColorImage.setBackgroundColor((WHITE));
                 }
 
-                notifyPriceChange(null, item, null, null, null, 0);
+                notifyPriceChange(null, selectedColor, null, null, null, 0);
             }
 
             @Override
@@ -287,14 +324,21 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 
                 switch (position){
                     case(0):
+                        mBrickInput.setText(items.get(0));
+                        mBrickInput.setClickable(true);
                         Log.d(TAG, "onItemSelected: Lumi.0");
                         mBrickLimiImage.setBackgroundColor(WHITE);
-                        break;
+                        notifyPriceChange(brickItemName , null, null, null, null, 0);
+                        return;
                     case(1):
+                        mBrickInput.setText("gb");
+                        mBrickInput.setClickable(false);
                         Log.d(TAG, "onItemSelected: Lumi.1");
                         mBrickLimiImage.setBackgroundColor(GREEN);
                         break;
                     case (2):
+                        mBrickInput.setText("gb");
+                        mBrickInput.setClickable(false);
                         Log.d(TAG, "onItemSelected: Lumi.2");
                         mBrickLimiImage.setBackgroundColor(BLUE);
                         break;
@@ -332,7 +376,9 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
                         double a = parseDouble(s.toString());
                         if ( a >= 0.1 ) {
                             Log.i(TAG, "afterTextChanged: s: " + a);
-                            notifyPriceChange(null , null, null, null, null, 2);
+                            orderAmount = a;
+                            calculateTypes();
+//                            notifyPriceChange(null , null, null, null, null, 2);
                         } else {
                             Log.i(TAG, "afterTextChanged: Text is too small: " + s);
                         }
@@ -350,12 +396,35 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         mBrickInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mBrickInput.getText().equals("gb")){
-                    mBrickInput.setText("m2");
+//                brickItemName = getSelectedBrickType();
+//                int brickIndex = brickNames.indexOf(brickItemName);
+//                String sellTypes = brickArrayList.get(brickIndex).getSellType();
+//                List<String> items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
+                int lastIndex = items.size()-1;
+                String oldBrickType = (String) mBrickInput.getText();
 
-                }else if (mBrickInput.getText().equals("m2")){
-                    mBrickInput.setText("gb");
-                }
+               if (oldBrickType.equals(items.get(lastIndex))){
+                   Log.i(TAG, "onClick: lastIndex true: " + items.get(lastIndex));
+                   mBrickInput.setText(items.get(0));
+                   currentTypeItem = items.get(0);
+               }else {
+                   for (int next = 0; next<lastIndex; next++){
+                       if (oldBrickType.equals(items.get(next))){
+                           mBrickInput.setText(items.get(next+1));
+                           currentTypeItem = items.get(next+1);
+                           break;
+                       }
+                   }
+               }
+
+                notifyPriceChange(null, null, null, null, sellTypes, 0);
+
+//                if(mBrickInput.getText().equals("gb")){
+//                    mBrickInput.setText("m2");
+//
+//                }else if (mBrickInput.getText().equals("m2")){
+//                    mBrickInput.setText("gb");
+//                }
             }
         });
 
@@ -364,118 +433,122 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         return mRootView;
     }
 
+    private void setDefault(){
+        mBrickColorImage.setBackgroundColor((GRAY));
+        brickColorPrice = 0;
+        mBrickLimiImage.setBackgroundColor(WHITE);
+        mBrickLumiSpinner.setSelection(0);
+    }
+
+    private void hideColor(String color){
+        mBrickColorSpinner.setVisibility(View.GONE);
+        mBrickColorImage.setVisibility(View.GONE);
+        mBrickColorSpinner.setSelection(0);
+        if (color.equals("YELLOW")){
+            mBrickTypeImage.setBackgroundColor((YELLOW));
+        } else {
+            mBrickTypeImage.setBackgroundColor((WHITE));
+        }
+    }
+    private void showColor(){
+        mBrickTypeImage.setBackgroundColor((WHITE));
+        mBrickColorImage.setVisibility(View.VISIBLE);
+        mBrickColorSpinner.setVisibility(View.VISIBLE);
+    }
+    private void hideLumi(){
+        mBrickLumiSpinner.setVisibility(View.GONE);
+        mBrickLimiImage.setVisibility(View.GONE);
+        //reset spinner
+        mBrickLimiImage.setBackgroundColor(WHITE);
+        mBrickLumiSpinner.setSelection(0);
+    }
+    private void showLumi(){
+        mBrickLumiSpinner.setVisibility(View.VISIBLE);
+        mBrickLimiImage.setVisibility(View.VISIBLE);
+    }
+
+
     //Should I change this function to 6 smaller one>? And set priceB as local variable.
     private void notifyPriceChange(String brickName, String brickColor, String brickLumi, Boolean brickClass, String brickInputType, double brickAmount) {
-        int start_amount = 1;
         double priceB = 0.0;
-        String brickSelectedName = getSelectedBrickType();
-        Log.i(TAG, "notifyPriceChange: \nSelected brick name:" + brickSelectedName);
-        int brickIndex = brickNames.indexOf(brickSelectedName);
-        double brickStartValue = brickArrayList.get(brickIndex).getPrice();
-        
-        if(brickAmount == 0 && orderAmount == 1 ){
-            Log.i(TAG, "notifyPriceChange: return on brickAmount 0");
-//            return;
-//            orderAmount = start_amount;
+//        String brickSelectedName = getSelectedBrickType();
+        Log.i(TAG, "notifyPriceChange: \nSelected brick name:" + brickItemName);
+//        brickIndex = brickNames.indexOf(brickSelectedName);
+//        double brickStartValue = brickArrayList.get(brickIndex).getPrice();
 
-        } else if( brickAmount == 2 ){
-            brickAmount = parseDouble(getSelectedBrickAmount());
-            Log.i(TAG, "notifyPriceChange: Should not make impact, return !!!");
-        }
-//        && getSelectedBrickAmount().equals("1")
+        if (brickName != null) {
 
-        
-        if (brickName != null){
+//            TODO make check for ** TAKTILAIS pump/line ** (specific brick whit no gray color(only yellow))
+//            if (brickName.equals("TAKTILAS pump") || brickName.equals("TAKTILAS line")){
+//                brickPrice  = brickArrayList.get(brickIndex).getPriceColor();
+//            }else {
+//            }
 
-            //TODO make check for ** TAKTILAIS pump/line ** (specific brick whit no gray color(only yellow))
-            if (brickName.equals("TAKTILAS pump") || brickName.equals("TAKTILAS line")){
-                priceB  = brickArrayList.get(brickIndex).getPriceColor();
-            }else {
-                priceB  = brickArrayList.get(brickIndex).getPrice();
-                Log.d(TAG, "notifyPriceChange: brickPrice of Name: " + brickName + "\nEquals: " + priceB);
-            }
-            brickPrice = priceB;
-            brickPriceTotal = ((brickPrice + lumiPrice) - discount) ;
-        } else if(brickColor != null){
-
-            if(brickColor.equals(brickColorArrayList[0])){
-                //Don`t change brick price
-                // TAKTILAIS pump/line
-                priceB  = brickArrayList.get(brickIndex).getPrice();
+            brickPrice = brickArrayList.get(brickIndex).getPrice();
+            brickPriceTotal = ((brickPrice + brickColorPrice) - discount);
+            calculateTypes();
+            Log.d(TAG, "notifyPriceChange: brickPrice of Name: " + brickName + "\nEquals: " + priceB);
+            return;
+        } else if (brickColor != null) {
+            if (brickColor.equals(brickColorArrayList[0])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceGray();
+            } else if (brickColor.equals(brickColorArrayList[1])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceGreen();
+            } else if (brickColor.equals(brickColorArrayList[2])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceYellow();
+            } else if (brickColor.equals(brickColorArrayList[3])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceOrange();
+            } else if (brickColor.equals(brickColorArrayList[4])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceRed();
+            } else if (brickColor.equals(brickColorArrayList[5])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceBlack();
+            } else if (brickColor.equals(brickColorArrayList[6])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceBrown();
+            } else if (brickColor.equals(brickColorArrayList[7])) {
+                brickColorPrice = brickArrayList.get(brickIndex).getPriceWhite();
             } else {
-                //Set new brick price(colored)
-                priceB  = brickArrayList.get(brickIndex).getPriceColor();
+                Log.i(TAG, "notifyPriceChange: \n\n System has incorect data- Color: 2.n");
             }
-            brickPrice = priceB;
-            brickPriceTotal = ((brickPrice + lumiPrice) - discount) ;
 
-        } else if( brickLumi != null ){
+            brickPriceTotal = ((brickPrice + brickColorPrice) - discount);
+            calculateTypes();
+            return;
 
-            if(brickLumi.equals("0")){
-                lumiPrice = 0;
-            } else if (brickLumi.equals("1") || brickLumi.equals("2")){
-                lumiPrice = 1.1;
+        } else if (brickLumi != null) {
+
+            if (brickLumi.equals("0")) {
+                brickPrice = brickArrayList.get(brickIndex).getPriceLumi();
+                Log.i(TAG, "notifyPriceChange: Lumi = 0,  Should not pass data!!! Error!?");
+            } else if (brickLumi.equals("1") || brickLumi.equals("2")) {
+                brickPrice = brickArrayList.get(brickIndex).getPriceLumi();
             } else {
                 Log.d(TAG, "notifyPriceChange: Error on brickColor");
             }
-            brickPriceTotal = ((brickPrice + lumiPrice) - discount) ;
+            brickPriceTotal = ((brickPrice) - discount);
+            calculateTypes();
 
-        } else if(brickClass != null ){
-            if (brickClass){
+        } else if (brickClass != null) {
+            if (brickClass) {
                 discount = 0.40;
                 Log.d(TAG, "notifyPriceChange: New discount to brick from: " + priceB);
                 Log.d(TAG, "To: " + priceB);
-            }else {
+            } else {
                 discount = 0;
             }
-            brickPriceTotal = ((brickPrice + lumiPrice) - discount) ;
+            brickPriceTotal = ((brickPrice + brickColorPrice) - discount);
+            calculateTypes();
 
 
+        } else if (brickInputType != null) {
+            calculateTypes();
 
-        } else if( brickInputType != null ){
 
-            /**
-             *  TODO: image text resize
-             *      create converter
-             */
-
-            // check (m2 or gb) as default input type
-
-            String input;
-            input = brickArrayList.get(brickIndex).getSellType();
-
-            if (brickInputType.equals("gb")){
-
-                if(input.equals("gb")){
-                    priceB  = brickArrayList.get(brickIndex).getPrice();
-                    getManufacture().setSellType("gb");
-                }else if (input.equals("m2")){
-                    Log.d(TAG, "notifyPriceChange: brickInputType: todo...2");
-                    //TODO create converter (call)
-                }
-
-            } else if (brickInputType.equals("m2")){
-
-                if(input.equals("m2")){
-                    priceB  = brickArrayList.get(brickIndex).getPrice();
-                    getManufacture().setSellType("m2");
-                }else if (input.equals("gb")){
-                    Log.d(TAG, "notifyPriceChange: brickInputType: todo...4");
-                    //TODO create converter (call)
-                }
-
-            }
-
-        } else if (brickAmount != 0 ){
-
+        } else if (brickAmount != 0) {
 //            orderPrice = orderPrice * brickAmount;
             orderAmount = brickAmount;
-
         } else {
-            priceB  = brickArrayList.get(brickIndex).getPrice();
-//            orderPrice = (priceB + lumiPrice) * discount * orderAmount;
-            Log.d(TAG, "notifyPriceChange: \n\n Deal whit this!!!!)");
-            //Should not work!
+            priceB = brickArrayList.get(brickIndex).getPrice();
+            Log.d(TAG, "notifyPriceChange:/n\n\n Error! 2.m\n\n Deal whit this!!!!)");
         }
 
 //        brickPriceTotal = Double.valueOf(df.format(brickPriceTotal));
@@ -486,15 +559,65 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //        }catch (Exception e){
 //            Log.i(TAG, "notifyPriceChange: 1e: " + e);
 //        }
-//        try {
-//            brickPriceTotal = Double.parseDouble(brickPriceTotalString);
-//        }catch (Exception e){
-//            Log.i(TAG, "notifyPriceChange: 2e: " + e);
-//        }
 
-        orderPrice = brickPriceTotal * orderAmount;
+//        orderPrice = inputSellPrice * orderAmount;
+//        String price = String.valueOf(orderPrice);
+//        mPriceBrickText.setText(String.valueOf(inputSellPrice));
+//        mPriceText.setText(price);
+//        Log.i(TAG, "notifyPriceChange end: brickPriceTotal: " + brickPriceTotal + "\nOrder price: " + orderPrice);
+    }
+
+    private void calculateTypes(){
+//        String sellTypes = brickArrayList.get(brickIndex).getSellType();
+//        List<String> items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
+//        Double brickAmount = parseDouble(getSelectedBrickAmount());
+        Double m2InPal = brickArrayList.get(brickIndex).getM2_InPallet();
+        int gb_m2 = brickArrayList.get(brickIndex).getGb_m2();
+        Double gb_pal = gb_m2*m2InPal;
+
+
+
+        int gbM2 = brickArrayList.get(brickIndex).getGb_m2();
+
+        int gbRinda = brickArrayList.get(brickIndex).getGbRinda();
+        Double garums = Double.valueOf(brickArrayList.get(brickIndex).getSizeG())/1000;
+        Double biezums = Double.valueOf(brickArrayList.get(brickIndex).getSizeB())/1000;
+        Double laukumsGB = garums*biezums;
+        Double m2Rinda = Double.valueOf(laukumsGB * gbRinda);
+//            calculateTypes(brickInputType, brickIndex, brickPriceTotal);
+        // check (m2 or gb) as default input type
+        String input;
+        input = brickArrayList.get(brickIndex).getSellType();
+//        priceB = brickArrayList.get(brickIndex).getPrice();
+
+
+        if (sellTypes.equals("m2,gb,rinda")) {
+
+            if (currentTypeItem.equals("gb")) {
+                inputSellPrice = 1 / (gbM2 / brickPriceTotal);
+                getManufacture().setSellType("gb");
+
+            } else if (currentTypeItem.equals("rinda")) {
+                inputSellPrice = 1 * (brickPriceTotal * m2Rinda);
+                getManufacture().setSellType("rinda");
+            } else if (currentTypeItem.equals("m2")) {
+                inputSellPrice = 1 * (brickPriceTotal);
+            }
+
+        } else if (sellTypes.equals("m2")) {
+
+            if (input.equals("m2")) {
+//                priceB = brickArrayList.get(brickIndex).getPrice();
+                getManufacture().setSellType("m2");
+            } else if (input.equals("gb")) {
+                Log.d(TAG, "notifyPriceChange: brickInputType: todo...4");
+                //TODO create converter (call)
+            }
+        }
+
+        orderPrice = inputSellPrice * orderAmount;
         String price = String.valueOf(orderPrice);
-        mPriceBrickText.setText(String.valueOf(brickPriceTotal));
+        mPriceBrickText.setText(String.valueOf(inputSellPrice));
         mPriceText.setText(price);
         Log.i(TAG, "notifyPriceChange end: brickPriceTotal: " + brickPriceTotal + "\nOrder price: " + orderPrice);
     }
@@ -845,7 +968,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //
 //                }
 //            }
-//
+
 //            @Override
 //            public void onNothingSelected(AdapterView<?> parent) {
 //

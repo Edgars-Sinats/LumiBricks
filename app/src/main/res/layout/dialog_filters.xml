@@ -22,10 +22,9 @@
         <ImageView
             android:id="@+id/icon_brick_type"
             style="@style/AppTheme.FilterIcon"
-            android:layout_centerVertical="true"
+            android:contentDescription="@string/value_brick_types"
             android:tint="@color/greySecondary"
-            app:srcCompat="@drawable/ic_brick_type_black_24dp"
-            android:contentDescription="@string/value_brick_types" />
+            app:srcCompat="@drawable/ic_brick_type_black_24dp" />
 
         <Spinner
             android:id="@+id/spinnerBrickItemType"
@@ -44,10 +43,9 @@
         <ImageView
             android:id="@+id/iconBrickItemColor"
             style="@style/AppTheme.FilterIcon"
-            android:layout_centerVertical="true"
+            android:contentDescription="@string/brick_color"
             android:tint="@color/greySecondary"
-            app:srcCompat="@drawable/ic_brick_color_fill_black_24dp"
-            android:contentDescription="@string/brick_color" />
+            app:srcCompat="@drawable/ic_brick_color_fill_black_24dp" />
 
         <Spinner
             android:id="@+id/spinnerBrickItemColor"
@@ -121,7 +119,7 @@
             android:layout_toEndOf="@+id/iconBrickItemCount"
             android:layout_toStartOf="@+id/buttonBrickItemInputOption"
             android:hint="@string/brick_insert_amount"
-            android:inputType="number"
+            android:inputType="numberDecimal"
              />
 <!--        android:text="@string/brick_fake_amount"-->
 

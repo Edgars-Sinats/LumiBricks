@@ -96,10 +96,8 @@
     </string-array>
     <!--        <item>Nast 6</item>-->
     <!--        <item>Prizma 6</item>-->
-
-
-
 <!--    <item>@string/value_brick_color</item>-->
+
     <string-array name="brick_color">
 
         <item>Pelēks</item>
