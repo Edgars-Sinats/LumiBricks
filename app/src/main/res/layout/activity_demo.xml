@@ -22,17 +22,16 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:menu="@menu/brick_menu"
-        app:logo="@drawable/ic_brick_produce_black_24dp"
-        android:visibility="gone"
-        app:title="@string/app_name"
-        app:titleTextColor="@android:color/white"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        app:menu="@menu/brick_menu"-->
+<!--        app:logo="@drawable/ic_brick_produce_black_24dp"-->
+<!--        app:title="@string/app_name"-->
+<!--        app:titleTextColor="@android:color/white"-->
+<!--        app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
 
 </RelativeLayout>

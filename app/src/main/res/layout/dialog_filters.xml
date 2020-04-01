@@ -191,6 +191,23 @@
             android:gravity="center"
             android:text="@string/euroTogether" />
 
+        <TextView
+            android:id="@+id/textViewConstant_Palletes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_toStartOf="@id/textViewPalletes"
+            android:paddingEnd="10dp"
+            android:text="@string/palettes"/>
+
+        <TextView
+            android:id="@+id/textViewPalletes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:text="@string/euroTogether"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -210,12 +227,40 @@
             android:id="@+id/textViewOrderSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/AppTheme.Body2"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_toEndOf="@id/textViewConstant_OrderSum"
             android:gravity="center"
             android:text="@string/euroTogether" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cardview_default_elevation"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewBrickTypeConstant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Orģinālais pardošanas veids: " />
+
+        <TextView
+            android:id="@+id/textViewBrickType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/textViewBrickTypeConstant"
+            android:gravity="center"
+            style="@style/AppTheme.Body2"
+            android:text="m2" />
+
+    </RelativeLayout>
+
+
 
 
 </LinearLayout>

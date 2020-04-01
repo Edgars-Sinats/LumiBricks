@@ -16,8 +16,7 @@
 
 package com.lumibricks.data;
 
-import androidx.fragment.app.FragmentManager;
-
+import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
 
 public abstract class AbstractAddRemoveExpandableDataProvider {
@@ -25,6 +24,8 @@ public abstract class AbstractAddRemoveExpandableDataProvider {
     public static abstract class BaseData {
         public abstract String getText();
         public abstract void setText(String text);
+        public abstract Double getPalletes();
+        public abstract void setPalletes(Double palletes);
 
         public abstract void setPinned(boolean pinned);
         public abstract boolean isPinned();
@@ -52,12 +53,13 @@ public abstract class AbstractAddRemoveExpandableDataProvider {
     public abstract int getGroupCount();
     public abstract int getChildCount(int groupPosition);
     public abstract Double getChildPriceSum(int start, int end);
+    public abstract Double getChildPalettesSum(int start, int end);
 
     public abstract GroupData getGroupItem(int groupPosition);
     public abstract ChildData getChildItem(int groupPosition, int childPosition);
 
     public abstract void addGroupItem(int groupPosition);
-    public abstract void addChildItem(int groupPosition, int childPosition, Manufacture manufacture);
+    public abstract void addChildItem(int groupPosition, int childPosition, BrickOrder manufacture);
 
     public abstract void removeGroupItem(int groupPosition);
     public abstract void removeChildItem(int groupPosition, int childPosition);

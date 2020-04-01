@@ -563,7 +563,7 @@ public class BrickDbHelper extends SQLiteOpenHelper {
 
         Brick b22 = new Brick(
                 "TEKNE" ,
-                "m2,gb,rinda",
+                "gb,m,rinda",
                 0,
                 0,
                 30,

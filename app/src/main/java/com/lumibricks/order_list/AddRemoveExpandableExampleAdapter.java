@@ -51,6 +51,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.lumibricks.FilterDialogFragment;
 import com.lumibricks.R;
 import com.lumibricks.data.AbstractAddRemoveExpandableDataProvider;
+import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
 import com.lumibricks.utils.DrawableUtils;
 import com.lumibricks.utils.ViewUtils;
@@ -62,7 +63,7 @@ class AddRemoveExpandableExampleAdapter
     private static final String TAG = "MyExpandableItemAdapter";
 
     private Context context;
-    private Manufacture newBrick;
+    private BrickOrder newBrick;
 
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_HEADER = 0;
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_ITEM = 1;
@@ -83,7 +84,7 @@ class AddRemoveExpandableExampleAdapter
     private String editedBrickName;
 
     @Override
-    public void onManufacture(Manufacture manufacture) {
+    public void onManufacture(BrickOrder manufacture) {
         newBrick = manufacture;
         Log.d(TAG, "onManufacture: \nwhenNewBrickGroupPosition:" + whenNewBrickGroupPosition );
         mProvider.addChildItem(whenNewBrickGroupPosition, 0, newBrick);
@@ -435,6 +436,7 @@ class AddRemoveExpandableExampleAdapter
         int last = findLastSectionItem(gropPosition);
         Log.i(TAG, "onBindSectionFooterGroupViewHolder: start: " +start + "\nlast: " + last);
         Double groupPriceBricks =mProvider.getChildPriceSum(start, last);
+        Double groupPalettes = mProvider.getChildPalettesSum(start, last);
 
         //hidden layout
         String stringGroupPriceSum = String.valueOf(groupPriceBricks);
@@ -449,7 +451,7 @@ class AddRemoveExpandableExampleAdapter
         long id = mProvider.getGroupItem(gropPosition).getGroupId();
         String gropCount= String.valueOf(groupCount);
 
-        holder.mTextPalettes.setText(gropCount);
+        holder.mTextPalettes.setText(String.valueOf(groupPalettes));
         holder.mTextTransport.setText(String.valueOf(childCount));
         holder.mTextExtra.setText(String.valueOf(id));
     }
@@ -459,9 +461,11 @@ class AddRemoveExpandableExampleAdapter
         int end = findLastSectionItem(a);
         Log.i(TAG, "updateOrderSum: start: " + start + "\nend: " + end);
         Double groupPriceBricks = mProvider.getChildPriceSum(start, end);
+        Double groupPalettes = mProvider.getChildPalettesSum(start, end);
         AbstractAddRemoveExpandableDataProvider.GroupData gD = mProvider.getGroupItem(end+1);
         if (gD.isSectionFooter()){
             gD.setGroupPrice(groupPriceBricks);
+            gD.setPalletes(groupPalettes);
         }else {
             Log.i(TAG, "updateOrderSum: groupPrice is not set  in footer");
         }
@@ -479,10 +483,10 @@ class AddRemoveExpandableExampleAdapter
         final AbstractAddRemoveExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
 
         if (newBrick != null){
-            Log.i(TAG, "onBindChildViewHolder: \n newBrick.getBrick(): " + newBrick.getBrick() + "\nitem.getText(): " + item.getText());
+            Log.i(TAG, "onBindChildViewHolder: \n newBrick.getBrick(): " + newBrick.getName() + "\nitem.getText(): " + item.getText());
             Log.i(TAG, "onBindChildViewHolder: item: " + item + "\n newBrick: " + newBrick);
-            holder.mTextView.setText(newBrick.getBrick());
-            Log.d(TAG, "onBindChildViewHolder: Manufacture name: " + newBrick.getBrick()) ;
+            holder.mTextView.setText(newBrick.getName());
+            Log.d(TAG, "onBindChildViewHolder: Manufacture name: " + newBrick.getName()) ;
         }else{
             holder.mTextView.setText(item.getText());
         }

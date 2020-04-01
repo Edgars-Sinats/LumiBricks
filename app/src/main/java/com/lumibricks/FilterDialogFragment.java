@@ -36,8 +36,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.lumibricks.db.BrickDbHelper;
 import com.lumibricks.model.Brick;
+import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +52,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.transform.dom.DOMLocator;
+
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.DKGRAY;
@@ -59,6 +64,7 @@ import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
 import static android.graphics.Color.YELLOW;
 import static com.lumibricks.R.array.brick_lumi;
+import static java.lang.Double.doubleToLongBits;
 import static java.lang.Double.longBitsToDouble;
 import static java.lang.Double.parseDouble;
 
@@ -96,6 +102,12 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     private List<String> items;
     private String mainTypeItem;
     private String currentTypeItem;
+    private Double m2InPal;
+    private int gb_m2;
+    private int gbRinda;
+    private Double orginBrickAmount;
+
+    private Double palletes;
 
 //as
     private double inputSellPrice = 0;
@@ -107,7 +119,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     private double brickColorPrice = 0;
     private double discount = 0;
 //    private double lumiPrice = 0;
-    private double orderPalletes = 0;
     private double typeCoefficient = 1;
 
     private ManufactureListener mManufactureListener;
@@ -117,7 +128,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     }
 
     public interface ManufactureListener {
-        void onManufacture(Manufacture manufacture);
+        void onManufacture(BrickOrder manufacture);
     }
 
     private View mRootView;
@@ -134,6 +145,8 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     private TextView mPriceBrickText;
     private TextView mPriceText;
     private Button mBrickInput;
+    private TextView mTextBrickTypeOrigin;
+    private TextView mTextPalletes;
     private DecimalFormat df;
 
 //    private ImageView mBrickQualityImage;
@@ -169,15 +182,16 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         mBrickQualityImage = mRootView.findViewById(R.id.iconBrickItemQuality);
         mBrickCountEditext = mRootView.findViewById(R.id.editTextBrickItemCount);
         mPriceBrickText = mRootView.findViewById(R.id.textViewBrickSum);
+        mBrickInput =  mRootView.findViewById(R.id.buttonBrickItemInputOption);
         mPriceText = mRootView.findViewById(R.id.textViewOrderSum);
-        mBrickInput = mRootView.findViewById(R.id.buttonBrickItemInputOption);
+        mTextBrickTypeOrigin = mRootView.findViewById(R.id.textViewBrickType);
+        mTextPalletes = mRootView.findViewById(R.id.textViewPalletes);
         df = new DecimalFormat("#.##");
 
         /**     Get brick from DB
          *      brickNames, contains list of brick Names
          *      @param brickNames
          *      @param
-         *
          *
          */
 //        savedInstanceState for rotating screen/...?
@@ -238,6 +252,9 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 brickItemName = parent.getSelectedItem().toString();
                 brickIndex = brickNames.indexOf(brickItemName);
+                m2InPal = brickArrayList.get(brickIndex).getM2_InPallet();
+                gb_m2 = brickArrayList.get(brickIndex).getGb_m2();
+                gbRinda = brickArrayList.get(brickIndex).getGbRinda();
 
 //                configurateSellType()
                 sellTypes = brickArrayList.get(brickIndex).getSellType();
@@ -245,6 +262,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
                 mainTypeItem = items.get(0);
                 mBrickInput.setText(items.get(0));
                 setDefault();
+
 
 
                 //TODO if brickItemName.equals("bord") || brickItemName.equals("apmale"){ show color black & gray} ???
@@ -568,22 +586,16 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     }
 
     private void calculateTypes(){
-//        String sellTypes = brickArrayList.get(brickIndex).getSellType();
-//        List<String> items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
-//        Double brickAmount = parseDouble(getSelectedBrickAmount());
-        Double m2InPal = brickArrayList.get(brickIndex).getM2_InPallet();
-        int gb_m2 = brickArrayList.get(brickIndex).getGb_m2();
         Double gb_pal = gb_m2*m2InPal;
+        Double rows = gb_pal/gbRinda;
+        palletes = 0.;
+        Double gbPalDb = brickArrayList.get(brickIndex).getGb_InPallet();
 
-
-
-        int gbM2 = brickArrayList.get(brickIndex).getGb_m2();
-
-        int gbRinda = brickArrayList.get(brickIndex).getGbRinda();
         Double garums = Double.valueOf(brickArrayList.get(brickIndex).getSizeG())/1000;
         Double biezums = Double.valueOf(brickArrayList.get(brickIndex).getSizeB())/1000;
         Double laukumsGB = garums*biezums;
         Double m2Rinda = Double.valueOf(laukumsGB * gbRinda);
+        orginBrickAmount=0.;
 //            calculateTypes(brickInputType, brickIndex, brickPriceTotal);
         // check (m2 or gb) as default input type
         String input;
@@ -594,32 +606,100 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         if (sellTypes.equals("m2,gb,rinda")) {
 
             if (currentTypeItem.equals("gb")) {
-                inputSellPrice = 1 / (gbM2 / brickPriceTotal);
+                inputSellPrice = 1 / (gb_m2 / brickPriceTotal);
                 getManufacture().setSellType("gb");
+                palletes = orderAmount/gb_pal;
+                orginBrickAmount = orderAmount/gb_m2;
 
             } else if (currentTypeItem.equals("rinda")) {
                 inputSellPrice = 1 * (brickPriceTotal * m2Rinda);
                 getManufacture().setSellType("rinda");
+                palletes = orderAmount/rows;
+                orginBrickAmount = orderAmount*m2Rinda;
             } else if (currentTypeItem.equals("m2")) {
                 inputSellPrice = 1 * (brickPriceTotal);
-            }
-
-        } else if (sellTypes.equals("m2")) {
-
-            if (input.equals("m2")) {
-//                priceB = brickArrayList.get(brickIndex).getPrice();
                 getManufacture().setSellType("m2");
-            } else if (input.equals("gb")) {
-                Log.d(TAG, "notifyPriceChange: brickInputType: todo...4");
-                //TODO create converter (call)
+                palletes = orderAmount/m2InPal;
+                orginBrickAmount = orderAmount;
             }
+
+        } else if (sellTypes.equals("m2,rinda")) {
+
+            //Only for Asorti & Mozaika
+            rows=13.0;
+            if (brickItemName.equals("ASORTI")){
+                m2Rinda=0.7;
+            } else if (brickItemName.equals("MOZAĪKA 5")){
+                m2Rinda=0.67;
+            }
+            if (currentTypeItem.equals("m2")) {
+                inputSellPrice = 1 * (brickPriceTotal);
+                getManufacture().setSellType("m2");
+                palletes = orderAmount/m2InPal;
+                orginBrickAmount = orderAmount;
+            } else if (currentTypeItem.equals("rinda")) {
+                inputSellPrice = 1 * (brickPriceTotal * m2Rinda);
+                getManufacture().setSellType("rinda");
+                palletes = orderAmount/rows;
+                orginBrickAmount = orderAmount*m2Rinda;
+            }
+        } else if (sellTypes.equals("gb,m,rinda")){
+            if (currentTypeItem.equals("gb")){
+                inputSellPrice = 1 * (brickPriceTotal);
+                getManufacture().setSellType("gb");
+                palletes = orderAmount/gbPalDb;
+                orginBrickAmount = orderAmount;
+            } else if(currentTypeItem.equals("m")){
+                inputSellPrice = 1 * (brickPriceTotal*garums);
+                getManufacture().setSellType("m");
+                //TODO palletes error
+                palletes = orderAmount/gbPalDb;
+                orginBrickAmount = orderAmount*garums;
+            } else if(currentTypeItem.equals("rinda")){
+                inputSellPrice = 1 * (brickPriceTotal*gbRinda);
+                getManufacture().setSellType("rinda");
+                palletes = orderAmount/(gbPalDb/gbRinda);
+                orginBrickAmount = orderAmount*gbRinda;
+            }
+
+        } else if(sellTypes.equals("gb,m2")){
+            if (currentTypeItem.equals("gb")){
+                inputSellPrice = 1 * (brickPriceTotal);
+                getManufacture().setSellType("gb");
+                palletes = orderAmount/gbPalDb;
+                orginBrickAmount = orderAmount;
+            } else if(currentTypeItem.equals("m2")){
+                inputSellPrice = 1 * (brickPriceTotal*gb_m2);
+                getManufacture().setSellType("m2");
+                palletes = orderAmount/m2InPal;
+                orginBrickAmount = orderAmount/gb_m2;
+            }
+        } else if (sellTypes.equals("gb")){
+            inputSellPrice = 1 * (brickPriceTotal);
+            getManufacture().setSellType("gb");
+            palletes = orderAmount/gbPalDb;
+            orginBrickAmount = orderAmount;
         }
 
+        //We round items to .## (2.digits after ".")
+        inputSellPrice = round2(inputSellPrice);
         orderPrice = inputSellPrice * orderAmount;
-        String price = String.valueOf(orderPrice);
+        String price = String.valueOf(round2(orderPrice));
         mPriceBrickText.setText(String.valueOf(inputSellPrice));
         mPriceText.setText(price);
         Log.i(TAG, "notifyPriceChange end: brickPriceTotal: " + brickPriceTotal + "\nOrder price: " + orderPrice);
+        String stringPalletes = String.valueOf(round2(palletes));
+        mTextBrickTypeOrigin.setText(mainTypeItem + ": " + round2(orginBrickAmount));
+        mTextPalletes.setText(stringPalletes);
+    }
+
+    public static double round2(double value) {
+//        int places = 2;
+//        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override
@@ -675,7 +755,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         }else {
             checkManufacture(newBrick);
             try {
-                mManufactureListener.onManufacture(newBrick);
+                mManufactureListener.onManufacture(getBrickOrder());
             }catch (Exception e){
                 Log.d(TAG, "onOrderClicked: Exception e: " + e);
             }
@@ -871,6 +951,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             manufacture.setAmount(orderAmount);
             manufacture.setPrice(brickPriceTotal);
             manufacture.setSellType(getSelectedBrickInput());
+            manufacture.setPalletes(palletes);
             //created in notifyPriceChange();
             //manufacture.setPrice(getSe);
 //            manufacture.getSellType()
@@ -880,6 +961,20 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         newManufactureObject = manufacture;
 
         return manufacture;
+    }
+
+    public BrickOrder getBrickOrder(){
+        BrickOrder brick= new BrickOrder();
+        brick.setName(brickItemName + "," + getSelectedBricColor() + "," + getSelectedBrickLumi() + "," + getSelectedBrickQuality());
+        brick.setAmount(orderAmount);
+        brick.setSellType(currentTypeItem);
+        brick.setSellPrice(brickColorPrice);
+        brick.setInputSellType(mainTypeItem);
+        brick.setInputSellPrice(inputSellPrice);
+        brick.setOrginAmount(orginBrickAmount);
+        brick.setPalletes(round2(palletes));
+        return brick;
+//                        items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
     }
     private void checkManufacture(Manufacture brickToCheck){
         if( brickToCheck.getBrick() == null || 

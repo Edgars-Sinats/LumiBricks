@@ -18,10 +18,11 @@ public class Manufacture {
     private Double amount;
     private Double price;
     private String sellType;
+    private Double palletes;
 
     public Manufacture() {    }
 
-    public Manufacture(String brick, String height, String color, String lumi, String quality, Double amount, Double price, String sellType) {
+    public Manufacture(String brick, String height, String color, String lumi, String quality, Double amount, Double price, String sellType, Double palletes) {
         this.brick = brick;
         this.height = height;
         this.color = color;
@@ -30,11 +31,11 @@ public class Manufacture {
         this.amount = amount;
         this.price = price;
         this.sellType = sellType;
+        this.palletes = palletes;
     }
 
     public static Manufacture getDefault(){
         Manufacture manufacture = new Manufacture();
-
         return manufacture;
     }
 
@@ -100,5 +101,13 @@ public class Manufacture {
 
     public void setSellType(String sellType) {
         this.sellType = sellType;
+    }
+
+    public Double getPalletes() {
+        return palletes;
+    }
+
+    public void setPalletes(Double palletes) {
+        this.palletes = palletes;
     }
 }

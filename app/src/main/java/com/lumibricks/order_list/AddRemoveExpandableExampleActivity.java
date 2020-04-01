@@ -68,18 +68,6 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity {
 
     }
 
-//    public  FilterDialogFragment createBrickItemInDialogFragment(){
-//        FilterDialogFragment mDialogFragment;
-//
-//        mDialogFragment = new FilterDialogFragment();
-//        Bundle bundle = new Bundle();
-//        Log.d("TAG", "onManufactureClicked: So far so good.");
-//        bundle.putString("buttonPressed", "brick_navigation_order");
-//        mDialogFragment.setArguments(bundle);
-//        mDialogFragment.show((AddRemoveExpandableExampleActivity.this).getSupportFragmentManager(), FilterDialogFragment.TAG);
-//        return null;
-//    }
-
     public AbstractAddRemoveExpandableDataProvider getDataProvider() {
         final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
         return ((ExampleAddRemoveExpandableDataProviderFragment) fragment).getDataProvider();
