@@ -304,7 +304,8 @@ class AddRemoveExpandableExampleAdapter
     public MyGroupViewHolder onCreateGroupViewHolder(@NonNull ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-//        View v1 = inflater.inflate(R.layout.list_item_cargo_details, parent, false);
+//        View v1 = inflater.inflate(R.layout.list_itemWhen you get up from healthy breakfest though 🍑🥥 and find out, that was just a dream, it might ruin a whole week.
+//So start your day from the right pedal._cargo_details, parent, false);
         final View v;
         switch (viewType) {
             case GROUP_ITEM_VIEW_TYPE_SECTION_HEADER:

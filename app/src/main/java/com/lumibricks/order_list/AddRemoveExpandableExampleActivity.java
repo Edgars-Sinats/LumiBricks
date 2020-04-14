@@ -57,13 +57,13 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity {
                     .commit();
         }
 
-        mToolbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Log.d("AddRemoveEEActivity", "onMenuItemClick: " + menuItem);
-                return false;
-            }
-        });
+//        mToolbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+//                Log.d("AddRemoveEEActivity", "onMenuItemClick: " + menuItem);
+//                return false;
+//            }
+//        });
 
 
     }
