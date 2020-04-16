@@ -20,10 +20,13 @@
 
     <color name="bg_group_item_dragging_active_state">#ffee99ff</color>
     <color name="bg_group_item_dragging_state">#ffeeccff</color>
-
-
-
-
+    <color name="snackbar_action_color_done">#ffccccff</color>
+    <color name="bg_swipe_group_item_pinned">#FF5722</color>
+    <color name="bg_swipe_group_item_dismiss">#ff295db3</color>
+    <color name="bg_swipe_item_dismiss">#ff2f8b2a</color>
+    <color name="bg_swipe_item_pinned">#fff9930d</color>
+    <color name="bg_group_item_swiping_active_state">#ffbb99ff</color>
+    <color name="bg_group_item_swiping_state">#ffddccff</color>
 
 
 </resources>

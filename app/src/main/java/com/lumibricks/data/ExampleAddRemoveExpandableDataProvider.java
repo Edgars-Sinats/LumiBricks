@@ -31,6 +31,8 @@ import java.util.List;
 public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExpandableDataProvider {
     public static Manufacture ChildData;
     private List<Pair<GroupData, List<ChildData>>> mData;
+    private Pair<GroupData, List<ChildData>> mLastRemovedData;
+    private int mLastRemovedPosition = -1;
 
     // for undo group item
     private Pair<GroupData, List<ChildData>> mLastRemovedGroup;
@@ -38,7 +40,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 
     // for undo child item
     private ChildData mLastRemovedChild;
-    private long mLastRemovedChildParentGroupId = -1;
+    private int mLastRemovedChildParentGroupId = -1;
     private int mLastRemovedChildPosition = -1;
 
 //  private FilterDialogFragment mDialogFragment;
@@ -81,7 +83,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
                 groupText =  Character.toString(groupItems.charAt(i));
             }
 
-            final ConcreteGroupData group = new ConcreteGroupData(groupId, isSection, isSectionFooter, 0.0, groupText, 0.0);
+            final ConcreteGroupData group = new ConcreteGroupData(groupId, isSection, isSectionFooter, 0.0, groupText, 0.0, false);
             final List<ChildData> children = new ArrayList<>();
 
             if (isSection) {
@@ -94,7 +96,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
                     final long childId = mChildIdGenerator.next();
 
                     final String childText = Character.toString(childItems.charAt(j));
-                    children.add(new ConcreteChildData(childId, false, false, "Piemērs: "+childText, "m", 30.0, 3.3, 0.0));
+                    children.add(new ConcreteChildData(childId, false, false, "Piemērs: "+childText, "m", 30.0, 3.3, 0.0, false));
                 }
 
                 // add child footer items
@@ -102,10 +104,10 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
                     final long childId = mChildIdGenerator.next();
                     if (j==0){
                         final String childText = "Transports";
-                        children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 00.0, 0.0));
+                        children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 00.0, 0.0, false));
                     } else{
                         final String childText = "Paletes";
-                        children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 0.0));
+                        children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 0.0, false));
                     }
                 }
 
@@ -203,9 +205,46 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     }
 
     @Override
+    public long undoLastRemoval() {
+        int insertedPosition;
+
+        if (mLastRemovedGroup != null){
+
+            if (mLastRemovedGroupPosition >= 0 && mLastRemovedGroupPosition < mData.size()) {
+                insertedPosition = mLastRemovedGroupPosition;
+            } else {
+                insertedPosition = mData.size();
+            }
+
+            mData.add(insertedPosition, mLastRemovedData);
+
+            mLastRemovedGroup = null;
+            mLastRemovedGroupPosition = -1;
+
+            return insertedPosition;
+
+        }else if(mLastRemovedChild != null){
+            if (mLastRemovedChildPosition >= 0 && mLastRemovedChildPosition < mData.get(mLastRemovedChildParentGroupId).second.size()){
+                insertedPosition = mLastRemovedChildPosition;
+            } else {
+                insertedPosition = mData.get(mLastRemovedChildParentGroupId).second.size();
+            }
+            mData.get(mLastRemovedChildParentGroupId).second.add(insertedPosition, mLastRemovedChild);
+
+            mLastRemovedChild = null;
+            mLastRemovedChildPosition = -1;
+            mLastRemovedChildParentGroupId = -1;
+
+            return insertedPosition;
+
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
     public void removeGroupItem(int groupPosition) {
-//        mData.remove(groupPosition);
-        mLastRemovedGroup = mData.remove(groupPosition);
+        mLastRemovedData = mData.remove(groupPosition);
         mLastRemovedGroupPosition = groupPosition;
 
         mLastRemovedChild = null;
@@ -217,7 +256,8 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     public void removeChildItem(int groupPosition, int childPosition) {
 //        mData.get(groupPosition).mChildren.remove(childPosition);
         mLastRemovedChild = mData.get(groupPosition).second.remove(childPosition);
-        mLastRemovedChildParentGroupId = mData.get(groupPosition).first.getGroupId();
+//        mLastRemovedChildParentGroupId = mData.get(groupPosition).first.getGroupId();
+        mLastRemovedChildParentGroupId = groupPosition;
         mLastRemovedChildPosition = childPosition;
 
         mLastRemovedGroup = null;
@@ -280,7 +320,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         long newGroupId = getGroupCount() +1;
         String text = getOneCharString(GROUP_ITEM_CHARS, newGroupId);
 
-        final ConcreteGroupData group = new ConcreteGroupData(newGroupId, false, false, 0.0, text, 0.0);
+        final ConcreteGroupData group = new ConcreteGroupData(newGroupId, false, false, 0.0, text, 0.0, false);
         mGroupIdGenerator.next();
         final List<ChildData> children = new ArrayList<>();
 
@@ -289,10 +329,10 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
             final long childId = mChildIdGenerator.next();
             if (j==0){
                 final String childText = "Transports";
-                children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 0.0, 0.0));
+                children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 0.0, 0.0, false));
             } else{
                 final String childText = "Paletes";
-                children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 2.1));
+                children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 2.1, false));
             }
         }
         mData.add(new Pair<GroupData, List<ChildData>>(group, children));
@@ -320,7 +360,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         final Double childAmount = manufacture.getOrginAmount();
         final double childPrice = manufacture.getSellPrice();
         final double childPalletes = manufacture.getPalletes();
-        final ConcreteChildData item = new ConcreteChildData(childId, false, false, childText, "Gb", childAmount, childPrice, childPalletes);
+        final ConcreteChildData item = new ConcreteChildData(childId, false, false, childText, "Gb", childAmount, childPrice, childPalletes, false);
 //        children.add(new ConcreteChildData(childId, childText));
 
         Log.d("DataProvider", "addChildItem: "+ item.toString());
@@ -346,16 +386,18 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         private Double mgroupPrice;
         private String mText;
         private Double mPalletes;
+        private Boolean mIsPinned;
 //        private long mNextChildId;
 
 
-        ConcreteGroupData(long id, boolean isSectionHeader, boolean isSectionFooter, Double groupPrice, String text, Double palletes) {
+        ConcreteGroupData(long id, boolean isSectionHeader, boolean isSectionFooter, Double groupPrice, String text, Double palletes, Boolean isPinned) {
             mId = id;
             mText = text;
             mIsSectionHeader = isSectionHeader;
             mIsSectionFooter = isSectionFooter;
             mgroupPrice = groupPrice;
             mPalletes = palletes;
+            mIsPinned = isPinned;
         }
 
         @Override
@@ -406,12 +448,12 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 
         @Override
         public void setPinned(boolean pinned) {
-
+            mIsPinned = pinned;
         }
 
         @Override
         public boolean isPinned() {
-            return false;
+            return mIsPinned;
         }
 
 //        public long generateNewChildId() {
@@ -428,6 +470,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         private long mNextChildId;
         private final boolean mIsSectionFooterPaletes;
         private final boolean mIsSectionFooterTransport;
+        private boolean mIsPinned;
 
         private long mId;
         private String mUnit;
@@ -435,7 +478,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         private Double mPrice;
         private Double mPalletes;
 
-        ConcreteChildData(long id, boolean isSectionFooterPaletes, boolean isSectionFooterTransport, String text, String unit, Double amount, Double price, Double palletes) {
+        ConcreteChildData(long id, boolean isSectionFooterPaletes, boolean isSectionFooterTransport, String text, String unit, Double amount, Double price, Double palletes, boolean isPinned) {
             mText = text;
             mNextChildId = 0;
             mIsSectionFooterPaletes = isSectionFooterPaletes;
@@ -445,6 +488,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
             mAmount = amount;
             mPrice = price;
             mPalletes = palletes;
+            mIsPinned = isPinned;
         }
 
         @Override
@@ -511,12 +555,13 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 
         @Override
         public void setPinned(boolean pinned) {
+            mIsPinned = pinned;
 
         }
 
         @Override
         public boolean isPinned() {
-            return false;
+            return mIsPinned;
         }
 
         public void setChildId(long id) {

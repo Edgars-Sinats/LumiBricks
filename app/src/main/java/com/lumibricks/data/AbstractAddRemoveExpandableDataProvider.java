@@ -69,4 +69,6 @@ public abstract class AbstractAddRemoveExpandableDataProvider {
 
     public abstract void clear();
     public abstract void clearChildren(int groupPosition);
+    public abstract long undoLastRemoval();
+
 }
