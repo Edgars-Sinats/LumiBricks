@@ -33,6 +33,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,6 +68,7 @@ import com.lumibricks.utils.DrawableUtils;
 import com.lumibricks.utils.ViewUtils;
 import com.lumibricks.widget.ExpandableItemIndicator;
 
+
 class AddRemoveExpandableExampleAdapter
         extends AbstractExpandableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>,
@@ -78,6 +82,8 @@ class AddRemoveExpandableExampleAdapter
 
     private Context context;
     private BrickOrder newBrick;
+    private boolean pinnedDummyTouch;
+    private boolean pinnedDummyTouchChild;
 
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_HEADER = 0;
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_ITEM = 1;
@@ -100,18 +106,10 @@ class AddRemoveExpandableExampleAdapter
 //            AddRemoveExpandableExampleAdapter.this.onClickItemView(v);
 //        }
 //    };
-    private View.OnClickListener mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AddRemoveExpandableExampleAdapter.this.onSwipeableViewContainerClick(v);
-
-        }
-    };
 
 
     private int whenNewBrickGroupPosition;
     private String editedBrickName;
-
     public interface EventListener {
 
         void onGroupItemRemoved(int groupPosition);
@@ -124,9 +122,9 @@ class AddRemoveExpandableExampleAdapter
 
         void onItemViewClicked(View v, boolean pinned);
 
+
 //        void onUnderSwipeableViewButtonClicked(View v);
     }
-
 
     @Override
     public void onManufacture(BrickOrder manufacture) {
@@ -138,6 +136,7 @@ class AddRemoveExpandableExampleAdapter
         updateOrderSum(whenNewBrickGroupPosition);
     }
 
+
 //    public interface EventListener {
 //    void onItemPinned(int position);
 //
@@ -146,6 +145,12 @@ class AddRemoveExpandableExampleAdapter
 //    void onUnderSwipeableViewButtonClicked(View v);
 //}
 
+    private View.OnClickListener mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AddRemoveExpandableExampleAdapter.this.onSwipeableViewContainerClick(v);
+        }
+    };
 
     private View.OnClickListener mItemOnClickListener = new View.OnClickListener() {
         @Override
@@ -155,9 +160,28 @@ class AddRemoveExpandableExampleAdapter
     };
 
     private void onSwipeableViewContainerClick(View v) {
-        if (mEventListener != null) {
-            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+//        if (mEventListener != null) {
+//            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+//        }
+        v.getRootView();
+        RecyclerView.ViewHolder vh = RecyclerViewAdapterUtils.getViewHolder(v);
+        int flatPosition = vh.getAdapterPosition();
+        if (flatPosition == RecyclerView.NO_POSITION) {
+            return;
         }
+
+        long expandablePosition = mExpandableItemManager.getExpandablePosition(flatPosition);
+        int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(expandablePosition);
+        int childPosition = RecyclerViewExpandableItemManager.getPackedPositionChild(expandablePosition);
+        if(childPosition != RecyclerView.NO_POSITION) {
+            AbstractAddRemoveExpandableDataProvider.ChildData data = mProvider.getChildItem(groupPosition, childPosition);
+            if (data.isPinned()) {
+                // unpin if tapped the pinned item
+                data.setPinned(false);
+                mExpandableItemManager.notifyChildItemChanged(groupPosition, childPosition);
+            }
+        }
+
     }
 
     public static abstract class MyBaseViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
@@ -450,6 +474,8 @@ class AddRemoveExpandableExampleAdapter
         holder.mImageAddItem.setOnClickListener(mItemOnClickListener);
         holder.mImageEditAddress.setOnClickListener(mItemOnClickListener);
         holder.itemView.setClickable(true);
+        holder.itemView.setOnClickListener(mItemOnClickListener);
+
 
 //        mImageAddItem = v.findViewById(R.id.image_button_add_item);
 //        mImageAddItem.setOnClickListener(clickListener);
@@ -549,8 +575,14 @@ class AddRemoveExpandableExampleAdapter
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
         holder.itemView.setOnClickListener(mItemOnClickListener);
+
+//        if(mProvider.getChildItem(groupPosition, childPosition).isPinned()){
+//
+//            holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
+//        }else {
+//            holder.itemView.setOnClickListener(mItemOnClickListener);
+//        }
         // (if the item is *not pinned*, click event comes to the mContainer)
-        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         if (newBrick != null){
             Log.i(TAG, "onBindChildViewHolder: \n newBrick.getBrick(): " + newBrick.getName() + "\nitem.getText(): " + item.getText());
@@ -636,19 +668,74 @@ class AddRemoveExpandableExampleAdapter
         int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(expandablePosition);
         int childPosition = RecyclerViewExpandableItemManager.getPackedPositionChild(expandablePosition);
 
-        if (mProvider.getGroupItem(groupPosition).isPinned()){
+        if(childPosition == RecyclerView.NO_POSITION){
+            AbstractAddRemoveExpandableDataProvider.GroupData data = mProvider.getGroupItem(groupPosition);
+            if (data.isPinned()) {
+                int bgResId;
+                if (pinnedDummyTouch == true) {
+                    bgResId = R.drawable.bg_swipe_x1;
 
-            if(mProvider.getGroupItem(groupPosition).getGroupId()==v.getId()){
-                Log.i(TAG, "onClickItemView: true id mach");
+                    pinnedDummyTouch = false;
+                } else {
+                    bgResId = R.drawable.bg_swipe_x2;
+                    pinnedDummyTouch = true;
+                }
+                vh.itemView.setBackgroundResource(bgResId);
+                new GroupUnpinResultAction(this, groupPosition);
+
+//                data.setPinned(false);
+//                AddRemoveExpandableExampleAdapter adapter = this;
+//                adapter.notifyItemChanged(flatPosition);
+
+                // unpin if tapped the pinned item
+//                data.setPinned(false);
+//                int bgResId = R.drawable.bg_swipe_item_neutral;
+//                v.setBackgroundResource(bgResId);
+//                new GroupUnpinResultAction(this, groupPosition);
+//                new GroupUnpinResultAction(this, groupPosition).onCleanUp();
+
+//                this.mExpandableItemManager.notifyGroupItemChanged(groupPosition);
+                return;
             }
+        }else {
+            AbstractAddRemoveExpandableDataProvider.ChildData data =  mProvider.getChildItem(groupPosition, childPosition);
+            if (data.isPinned()) {
+                int bgResId;
+                if (pinnedDummyTouchChild == true) {
+                    bgResId = R.drawable.bg_swipe_child_x1;
 
-
-        }else if(mProvider.getChildItem(groupPosition, childPosition).isPinned()){
-
-            if (mProvider.getChildItem(groupPosition, childPosition).getChildId()==v.getId()){
-                Log.i(TAG, "onClickItemView: true id mach(child)");
+                    pinnedDummyTouchChild = false;
+                } else {
+                    bgResId = R.drawable.bg_swipe_child_x2;
+                    pinnedDummyTouchChild = true;
+                }
+                vh.itemView.setBackgroundResource(bgResId);
+                new ChildUnpinResultAction(this, groupPosition, childPosition);
+                // unpin if tapped the pinned item
+//                AddRemoveExpandableExampleAdapter adapter = this;
+//                data.setPinned(false);
+//                vh.itemView.setBackgroundResource(R.drawable.bg_swipe_item_neutral);
+//                adapter.mExpandableItemManager.notifyChildItemChanged(groupPosition, childPosition);
+//                adapter = null;
+//                new ChildUnpinResultAction(adapter, groupPosition, childPosition);
+//                mExpandableItemManager.notifyChildItemChanged(groupPosition, childPosition);
+                return;
             }
         }
+
+//        if (mProvider.getGroupItem(groupPosition).isPinned()){
+//
+//            if(mProvider.getGroupItem(groupPosition).getGroupId()==v.getId()){
+//                Log.i(TAG, "onClickItemView: true id mach");
+//            }
+//
+//
+//        }else if(mProvider.getChildItem(groupPosition, childPosition).isPinned()){
+//
+//            if (mProvider.getChildItem(groupPosition, childPosition).getChildId()==v.getId()){
+//                Log.i(TAG, "onClickItemView: true id mach(child)");
+//            }
+//        }
 
         switch (v.getId()) {
             // common events
@@ -1505,7 +1592,7 @@ class AddRemoveExpandableExampleAdapter
 
     @Override
     public void onSwipeChildItemStarted(@NonNull MyChildViewHolder holder, int groupPosition, int childPosition) {
-        notifyDataSetChanged();
+         notifyDataSetChanged();
 
     }
 
