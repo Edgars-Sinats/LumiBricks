@@ -1,10 +1,5 @@
 package com.lumibricks.model;
 
-import android.widget.EditText;
-import android.widget.Spinner;
-
-import com.lumibricks.R;
-
 public class Manufacture {
 
     private String userID;
@@ -18,11 +13,11 @@ public class Manufacture {
     private Double amount;
     private Double price;
     private String sellType;
-    private Double palletes;
+    private Double palettes;
 
     public Manufacture() {    }
 
-    public Manufacture(String brick, String height, String color, String lumi, String quality, Double amount, Double price, String sellType, Double palletes) {
+    public Manufacture(String brick, String height, String color, String lumi, String quality, Double amount, Double price, String sellType, Double palettes) {
         this.brick = brick;
         this.height = height;
         this.color = color;
@@ -31,7 +26,7 @@ public class Manufacture {
         this.amount = amount;
         this.price = price;
         this.sellType = sellType;
-        this.palletes = palletes;
+        this.palettes = palettes;
     }
 
     public static Manufacture getDefault(){
@@ -103,11 +98,11 @@ public class Manufacture {
         this.sellType = sellType;
     }
 
-    public Double getPalletes() {
-        return palletes;
+    public Double getPalettes() {
+        return palettes;
     }
 
-    public void setPalletes(Double palletes) {
-        this.palletes = palletes;
+    public void setPalettes(Double palettes) {
+        this.palettes = palettes;
     }
 }

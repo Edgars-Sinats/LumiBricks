@@ -28,8 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumibricks.R;
 
-//import com.h6ah4i.android.example.advrecyclerview.R;
-
 public class ExpandableItemPinnedMessageDialogFragment extends DialogFragment {
     private static final String KEY_GROUP_ITEM_POSITION = "group_position";
     private static final String KEY_CHILD_ITEM_POSITION = "child_position";

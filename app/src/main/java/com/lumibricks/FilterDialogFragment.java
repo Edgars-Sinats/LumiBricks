@@ -951,7 +951,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
             manufacture.setAmount(orderAmount);
             manufacture.setPrice(brickPriceTotal);
             manufacture.setSellType(getSelectedBrickInput());
-            manufacture.setPalletes(palletes);
+            manufacture.setPalettes(palletes);
             //created in notifyPriceChange();
             //manufacture.setPrice(getSe);
 //            manufacture.getSellType()

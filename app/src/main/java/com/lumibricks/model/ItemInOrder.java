@@ -6,16 +6,18 @@ public class ItemInOrder {
     private String itemName;
     private double itemAmount;
     private double itemPrice;
+    private double itemPalettes;
     private int inStock;
 
     public ItemInOrder(){}
 
-    public ItemInOrder(int itemsInOrderID, int orderID, String itemName, double itemAmount, double itemPrice, int inStock) {
-        this.itemInOrderID = itemsInOrderID;
+    public ItemInOrder(int itemInOrderID, int orderID, String itemName, double itemAmount, double itemPrice, double itemPalettes, int inStock) {
+        this.itemInOrderID = itemInOrderID;
         this.orderID = orderID;
         this.itemName = itemName;
         this.itemAmount = itemAmount;
         this.itemPrice = itemPrice;
+        this.itemPalettes = itemPalettes;
         this.inStock = inStock;
     }
 
@@ -57,6 +59,14 @@ public class ItemInOrder {
 
     public void setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
+    }
+
+    public double getItemPalettes() {
+        return itemPalettes;
+    }
+
+    public void setItemPalettes(double itemPalettes) {
+        this.itemPalettes = itemPalettes;
     }
 
     public int getInStock() {

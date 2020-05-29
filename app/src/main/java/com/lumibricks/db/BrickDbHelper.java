@@ -10,7 +10,11 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.lumibricks.FilterDialogFragment;
+import com.lumibricks.model.Address;
 import com.lumibricks.model.Brick;
+import com.lumibricks.model.ItemInOrder;
+import com.lumibricks.model.Order;
+import com.lumibricks.model.User;
 
 import java.util.ArrayList;
 
@@ -45,6 +49,7 @@ public class BrickDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
+
 
         final String SQL_CREATE_BRICK_TABLES = "CREATE TABLE " +
                 BrickContract.BrickTable.TABLE_NAME + "( " +
@@ -976,6 +981,202 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         db.insert(BrickContract.BrickTable.TABLE_NAME, null, cv);
     }
 
+
+    public void addUser(User user){
+        ContentValues cv = new ContentValues();
+        cv.put(BrickContract.UserTable.COLUMN_USER_NAME, user.getUserName());
+        cv.put(BrickContract.UserTable.COLUMN_NAME, user.getName());
+        cv.put(BrickContract.UserTable.COLUMN_SURNAME, user.getSurname());
+        cv.put(BrickContract.UserTable.COLUMN_E_MAIL, user.geteMail());
+        cv.put(BrickContract.UserTable.COLUMN_MOBILE, user.getMobile());
+        cv.put(BrickContract.UserTable.COLUMN_BANK_NR, user.getBankNr());
+        db.insert(BrickContract.UserTable.TABLE_NAME, null, cv);
+    }
+
+    public void addAddress(Address address){
+        ContentValues cv = new ContentValues();
+        cv.put(BrickContract.AddressTable.COLUMN_ADDRESS_NAME, address.getAddressName());
+        cv.put(BrickContract.AddressTable.COLUMN_COUNTRY, address.getCountry());
+        cv.put(BrickContract.AddressTable.COLUMN_REGION, address.getRegion());
+        cv.put(BrickContract.AddressTable.COLUMN_CITY, address.getCity());
+        cv.put(BrickContract.AddressTable.COLUMN_STREET, address.getStreet());
+        cv.put(BrickContract.AddressTable.COLUMN_HOUSE, address.getHouse());
+        cv.put(BrickContract.AddressTable.COLUMN_GEO_LOCATION, address.getGeoLocation());
+        db.insert(BrickContract.AddressTable.TABLE_NAME, null, cv);
+    }
+
+    public void addOrder(Order order){
+        ContentValues cv = new ContentValues();
+        cv.put(BrickContract.OrderTable.COLUMN_USER_ID, order.getUserID());
+        cv.put(BrickContract.OrderTable.COLUMN_PALETTES, order.getPalettes());
+        cv.put(BrickContract.OrderTable.COLUMN_ORDER_PRICE, order.getOrderPrice());
+        cv.put(BrickContract.OrderTable.COLUMN_TIMESTAMP, order.getTimeStamp());
+        cv.put(BrickContract.OrderTable.COLUMN_ADDRESS_ID, order.getAddressID());
+        db.insert(BrickContract.OrderTable.TABLE_NAME, null, cv);
+    }
+
+    public void addItemsInOrder(ItemInOrder items){
+        ContentValues cv = new ContentValues();
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_ORDER_ID, items.getOrderID());
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_NAME, items.getItemName());
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_AMOUNT, items.getItemAmount());
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PRICE, items.getItemPrice());
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PALETTES, items.getItemPalettes());
+        cv.put(BrickContract.ItemsIrOrderTable.COLUMN_IN_STOCK, items.getInStock());
+        db.insert(BrickContract.ItemsIrOrderTable.TABLE_NAME, null, cv);
+    }
+
+    public ArrayList<ItemInOrder> getItemsInOrder(int orderID){
+        ArrayList<ItemInOrder> itemsList = new ArrayList<>();
+        db = getReadableDatabase();
+
+        //Find items in table whit orderID from Order table!!!!!!! TODO crete correct search => Query whit selection from order table
+        String[] selectionArgs = new String[]{String.valueOf(orderID)};
+
+        Cursor c  =db.rawQuery("SELECT * FROM " + BrickContract.ItemsIrOrderTable.TABLE_NAME, selectionArgs);
+
+        if (c.moveToFirst()) {
+            do {
+                ItemInOrder item = new ItemInOrder();
+                item.setItemInOrderID(c.getInt(c.getColumnIndex(BrickContract.ItemsIrOrderTable._ID)));
+                try {
+                    item.setOrderID(c.getInt(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_ORDER_ID)));
+                    item.setItemName(c.getString(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_NAME)));
+                    item.setItemAmount(c.getDouble(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_AMOUNT)));
+                    item.setItemPrice(c.getDouble(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PRICE)));
+                    item.setItemPalettes(c.getDouble(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PALETTES)));
+                    item.setInStock(c.getInt(c.getColumnIndex(BrickContract.ItemsIrOrderTable.COLUMN_IN_STOCK)));
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Try Cache Error(read rows ):\n " + e);
+                }
+
+                itemsList.add(item);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return itemsList;
+    }
+
+    // type represent (0-user , 1-address)
+    //id represent id of correct input, if null, then get all Orders from chosen user
+
+    public ArrayList<Order> getOrders(int orderId, Integer addressId){
+        ArrayList<Order> brickList = new ArrayList<>();
+        db = getReadableDatabase();
+
+        String userID = BrickContract.OrderTable.COLUMN_USER_ID;
+        String addressID = BrickContract.OrderTable.COLUMN_ADDRESS_ID;
+
+        //Use User Table
+        //Selection arg might be null
+        String[] selectionArgs = new String[]{BrickContract.OrderTable.TABLE_NAME};
+
+        //orderId take data from concrete one User
+        Cursor c = db.rawQuery("SELECT * FROM " +
+                BrickContract.OrderTable.TABLE_NAME +
+                " WHERE " + userID + " = " + orderId , selectionArgs);
+
+        //addressId take data from concrete one address
+        if (addressId != null){
+            c = db.rawQuery("SELECT * FROM " +
+                    BrickContract.OrderTable.TABLE_NAME +
+                    " WHERE " + userID + " = " + orderId +" AND " + addressID + " = " + addressId , selectionArgs);
+        }
+
+        //Find items in table whit orderID
+//        Cursor c = db.rawQuery("SELECT * FROM " +
+//                BrickContract.OrderTable.TABLE_NAME +
+//                " WHERE " + userID + " = " + orderId +" AND " + addressID + " = " + addressId , selectionArgs);
+
+        if (c.moveToFirst()) {
+            do {
+                Order orderList = new Order();
+                orderList.setOrderID(c.getInt(c.getColumnIndex(BrickContract.OrderTable._ID)));
+                try {
+                    orderList.setUserID(c.getInt(c.getColumnIndex(BrickContract.OrderTable.COLUMN_USER_ID)));
+                    orderList.setPalettes(c.getDouble(c.getColumnIndex(BrickContract.OrderTable.COLUMN_PALETTES)));
+                    orderList.setOrderPrice(c.getDouble(c.getColumnIndex(BrickContract.OrderTable.COLUMN_ORDER_PRICE)));
+                    orderList.setTimeStamp(c.getString(c.getColumnIndex(BrickContract.OrderTable.COLUMN_TIMESTAMP)));
+                    orderList.setAddressID(c.getInt(c.getColumnIndex(BrickContract.OrderTable.COLUMN_ADDRESS_ID)));
+
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Try Cache Error(read rows ):\n " + e);
+                }
+
+                brickList.add(orderList);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return brickList;
+    }
+
+    public ArrayList<User> getUsers(){
+        //Find all Users in table
+        ArrayList<User> userList = new ArrayList<>();
+        db = getReadableDatabase();
+
+        Cursor c  =db.rawQuery("SELECT * FROM " + BrickContract.UserTable.TABLE_NAME, null);
+
+        if (c.moveToFirst()) {
+            do {
+                User user = new User();
+                user.setUserID(c.getInt(c.getColumnIndex(BrickContract.UserTable._ID)));
+                try {
+                    user.setUserName(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_USER_NAME)));
+                    user.setName(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_NAME)));
+                    user.setSurname(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_SURNAME)));
+                    user.seteMail(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_E_MAIL)));
+                    user.setMobile(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_MOBILE)));
+                    user.setBankNr(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_BANK_NR)));
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Try Cache Error(read rows ):\n " + e);
+                }
+
+                userList.add(user);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return userList;
+    }
+
+    public ArrayList<Address> getAddress(){
+        //Find all Users in table
+        ArrayList<Address> addressesList = new ArrayList<>();
+        db = getReadableDatabase();
+
+        Cursor c  =db.rawQuery("SELECT * FROM " + BrickContract.AddressTable.TABLE_NAME, null);
+
+        if (c.moveToFirst()) {
+            do {
+                Address address = new Address();
+                address.setAddressID(c.getInt(c.getColumnIndex(BrickContract.AddressTable._ID)));
+                try {
+                    address.setAddressName(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_ADDRESS_NAME)));
+                    address.setCountry(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_COUNTRY)));
+                    address.setRegion(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_REGION)));
+                    address.setCity(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_CITY)));
+                    address.setStreet(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_STREET)));
+                    address.setHouse(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_HOUSE)));
+                    address.setGeoLocation(c.getString(c.getColumnIndex(BrickContract.AddressTable.COLUMN_GEO_LOCATION)));
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Try Cache Error(read rows ):\n " + e);
+                }
+
+                addressesList.add(address);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return addressesList;
+    }
+
     public ArrayList<Brick> getBricks(){
 
         ArrayList<Brick> brickList = new ArrayList<>();
@@ -1019,14 +1220,6 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         c.close();
         return brickList;
 
-//        Cursor c = db.query(
-//                BrickContract.BrickTable.TABLE_NAME,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null);
     }
 
 
