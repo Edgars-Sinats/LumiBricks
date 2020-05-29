@@ -17,12 +17,17 @@
 package com.lumibricks.data;
 
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.core.util.Pair;
 
+import com.lumibricks.FilterDialogFragment;
+import com.lumibricks.db.BrickDbHelper;
+import com.lumibricks.model.Brick;
 import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
+import com.lumibricks.model.User;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,6 +38,8 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     private List<Pair<GroupData, List<ChildData>>> mData;
     private Pair<GroupData, List<ChildData>> mLastRemovedData;
     private int mLastRemovedPosition = -1;
+    BrickDbHelper dbHelper;
+
 
     // for undo group item
     private Pair<GroupData, List<ChildData>> mLastRemovedGroup;
@@ -53,7 +60,11 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     private IdGenerator mGroupIdGenerator;
     private IdGenerator mChildIdGenerator;
 
+    //Test doc function
     public ExampleAddRemoveExpandableDataProvider() {
+        Brick brick = new Brick();
+        BrickOrder brickOrder = new BrickOrder();
+
         mGroupIdGenerator = new IdGenerator();
         mChildIdGenerator= new IdGenerator();
 
@@ -68,7 +79,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         for (int i = 0; i < groupItems.length(); i++) {
             //noinspection UnnecessaryLocalVariable
 //            final long groupId = i;
-            final long groupId = mGroupIdGenerator.next();
+            final int groupId = mGroupIdGenerator.next();
             final boolean isSection = (groupItems.charAt(i) == '|');
             final boolean isSectionFooter = (groupItems.charAt(i) == '_');
 
@@ -256,8 +267,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     public void removeChildItem(int groupPosition, int childPosition) {
 //        mData.get(groupPosition).mChildren.remove(childPosition);
         mLastRemovedChild = mData.get(groupPosition).second.remove(childPosition);
-//        mLastRemovedChildParentGroupId = mData.get(groupPosition).first.getGroupId();
-        mLastRemovedChildParentGroupId = groupPosition;
+        mLastRemovedChildParentGroupId = mData.get(groupPosition).first.getGroupId();
         mLastRemovedChildPosition = childPosition;
 
         mLastRemovedGroup = null;
@@ -317,7 +327,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 //        mData = new LinkedList<>();
 
         //Can be the same id? (when move/delete, then add new group)
-        long newGroupId = getGroupCount() +1;
+        int newGroupId = getGroupCount() +1;
         String text = getOneCharString(GROUP_ITEM_CHARS, newGroupId);
 
         final ConcreteGroupData group = new ConcreteGroupData(newGroupId, false, false, 0.0, text, 0.0, false);
@@ -380,7 +390,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     }
 
     public static final class ConcreteGroupData extends GroupData {
-        private final long mId;
+        private final int mId;
         private final boolean mIsSectionHeader;
         private final boolean mIsSectionFooter;
         private Double mgroupPrice;
@@ -390,7 +400,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 //        private long mNextChildId;
 
 
-        ConcreteGroupData(long id, boolean isSectionHeader, boolean isSectionFooter, Double groupPrice, String text, Double palletes, Boolean isPinned) {
+        ConcreteGroupData(int id, boolean isSectionHeader, boolean isSectionFooter, Double groupPrice, String text, Double palletes, Boolean isPinned) {
             mId = id;
             mText = text;
             mIsSectionHeader = isSectionHeader;
@@ -411,7 +421,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         }
 
         @Override
-        public long getGroupId() {
+        public int getGroupId() {
             return mId;
         }
 
@@ -581,10 +591,10 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     }
 
     private static class IdGenerator {
-        long mId;
+        int mId;
 
-        public long next() {
-            final long id = mId;
+        public int next() {
+            final int id = mId;
             mId += 1;
             return id;
         }

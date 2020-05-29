@@ -34,7 +34,7 @@ public abstract class AbstractAddRemoveExpandableDataProvider {
     public static abstract class GroupData extends BaseData {
         public abstract boolean isSectionHeader();
         public abstract boolean isSectionFooter();
-        public abstract long getGroupId();
+        public abstract int getGroupId();
         public abstract Double getGroupPrice();
         public abstract void setGroupPrice(Double price);
     }
