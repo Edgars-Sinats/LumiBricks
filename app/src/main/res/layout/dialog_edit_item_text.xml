@@ -3,13 +3,34 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <ImageView
-        android:src="@drawable/ic_edit_black_24dp"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="center"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonEditDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFBB33"
+            android:backgroundTintMode="src_atop"
+            android:drawableStart="@drawable/ic_edit_black_24dp"
+        />
+
+        <Button
+            android:id="@+id/buttonChooseDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFBB33"
+            android:drawableEnd="@drawable/ic_search_black_24dp"
+            />
+
+
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/username"
         android:inputType="textEmailAddress"
@@ -20,6 +41,19 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
         android:hint="@string/brick_name" />
+
+    <view class="androidx.recyclerview.widget.RecyclerView"
+        android:id="@+id/recycler_viewItems"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-65dp"
+        android:visibility="invisible">
+
+    </view>
+
+
+
+
 <!--    <EditText-->
 <!--        android:id="@+id/password"-->
 <!--        android:inputType="textPassword"-->

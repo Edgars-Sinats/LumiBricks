@@ -20,7 +20,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
+
+
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:background="@color/expandable_item_indicator_color"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:visibility="visible"
+        android:src="@drawable/ic_cloud_upload_black_24dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingPushInDb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/floatingUpload"
+        android:layout_gravity="bottom|start"
+        android:background="@color/colorAccent"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:visibility="visible"
+        android:src="@drawable/ic_save_black_24dp" />
 
 <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
 <!--        android:id="@+id/toolbar"-->

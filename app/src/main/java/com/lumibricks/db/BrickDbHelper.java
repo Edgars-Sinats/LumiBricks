@@ -22,7 +22,7 @@ import static android.content.ContentValues.TAG;
 
 public class BrickDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "brick.db"; //Change name if you want to test
-    private static final int DATABASE_VERSION = 9; //increase (version start from 1)
+    private static final int DATABASE_VERSION = 10; //increase (version start from 1)
     private static BrickDbHelper instance;
     public SQLiteDatabase db;
 

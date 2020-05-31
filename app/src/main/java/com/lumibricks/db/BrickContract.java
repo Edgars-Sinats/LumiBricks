@@ -49,7 +49,6 @@ public final class BrickContract {
         public static final String COLUMN_SURNAME = "Surname";
         public static final String COLUMN_E_MAIL = "eMail";
         public static final String COLUMN_MOBILE = "Mobile";
-
         public static final String COLUMN_BANK_NR = "BankNr";
 
     }

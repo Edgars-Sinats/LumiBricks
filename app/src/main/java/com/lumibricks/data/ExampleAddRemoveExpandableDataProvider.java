@@ -586,6 +586,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     }
 
 
+
     private static String getOneCharString(String str, long index) {
         return Character.toString(str.charAt((int) (index % str.length())));
     }

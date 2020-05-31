@@ -11,14 +11,14 @@ public class User {
 
     public User(){}
 
-    public User(int userID, String userName, String name, String surname, String eMail, String bankNr, String mobile) {
+    public User(int userID, String userName, String name, String surname, String eMail, String mobile, String bankNr) {
         this.userID = userID;
         this.userName = userName;
         this.name = name;
         this.surname = surname;
         this.eMail = eMail;
-        this.bankNr = bankNr;
         this.mobile = mobile;
+        this.bankNr = bankNr;
     }
 
     public int getUserID() {
