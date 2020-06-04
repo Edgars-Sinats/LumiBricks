@@ -1,7 +1,6 @@
 package com.lumibricks.model;
 
 public class Order {
-    private int orderID;
     private int userID;
     private double palettes;
     private double orderPrice;
@@ -11,7 +10,7 @@ public class Order {
     public Order(){}
 
     public Order(int orderID, int userID, double palettes, double orderPrice, String timeStamp, int addressID) {
-        this.orderID = orderID;
+//        this.orderID = orderID;
         this.userID = userID;
         this.palettes = palettes;
         this.orderPrice = orderPrice;
@@ -19,13 +18,13 @@ public class Order {
         this.addressID = addressID;
     }
 
-    public int getOrderID() {
-        return orderID;
-    }
-
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
+//    public int getOrderID() {
+//        return orderID;
+//    }
+//
+//    public void setOrderID(int orderID) {
+//        this.orderID = orderID;
+//    }
 
     public int getUserID() {
         return userID;

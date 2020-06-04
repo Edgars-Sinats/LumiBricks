@@ -1,7 +1,7 @@
 package com.lumibricks.model;
 
 public class User {
-    private int userID;
+//    private int userID;
     private String userName;
     private String name;
     private String surname;
@@ -11,8 +11,8 @@ public class User {
 
     public User(){}
 
-    public User(int userID, String userName, String name, String surname, String eMail, String mobile, String bankNr) {
-        this.userID = userID;
+    public User(String userName, String name, String surname, String eMail, String mobile, String bankNr) {
+//        this.userID = userID;
         this.userName = userName;
         this.name = name;
         this.surname = surname;
@@ -21,13 +21,13 @@ public class User {
         this.bankNr = bankNr;
     }
 
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
+//    public int getUserID() {
+//        return userID;
+//    }
+//
+//    public void setUserID(int userID) {
+//        this.userID = userID;
+//    }
 
     public String getUserName() {
         return userName;

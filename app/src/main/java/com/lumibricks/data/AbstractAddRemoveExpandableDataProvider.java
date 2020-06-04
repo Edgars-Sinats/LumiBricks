@@ -16,10 +16,14 @@
 
 package com.lumibricks.data;
 
+import android.content.Context;
+
 import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
 
 public abstract class AbstractAddRemoveExpandableDataProvider {
+
+    public abstract Context getContext();
 
     public static abstract class BaseData {
         public abstract String getText();

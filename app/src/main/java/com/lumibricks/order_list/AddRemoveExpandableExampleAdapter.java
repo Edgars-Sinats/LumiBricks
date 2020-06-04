@@ -19,7 +19,6 @@ package com.lumibricks.order_list;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,9 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,18 +51,22 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.lumibricks.FilterDialogFragment;
 import com.lumibricks.R;
+import com.lumibricks.adapter.UserAdapter;
 import com.lumibricks.data.AbstractAddRemoveExpandableDataProvider;
+import com.lumibricks.db.BrickDbHelper;
+import com.lumibricks.model.Address;
 import com.lumibricks.model.BrickOrder;
-import com.lumibricks.model.Manufacture;
+import com.lumibricks.model.User;
 import com.lumibricks.utils.DrawableUtils;
 import com.lumibricks.utils.ViewUtils;
 import com.lumibricks.widget.ExpandableItemIndicator;
+
+import java.util.ArrayList;
 
 
 class AddRemoveExpandableExampleAdapter
@@ -80,6 +80,12 @@ class AddRemoveExpandableExampleAdapter
       private interface Swipeable extends SwipeableItemConstants {
       }
 
+    ArrayList<User> usersArrayList;
+    ArrayList<Address> addressesArrayList;
+    private UserAdapter mUserAdapter;
+    private BrickDbHelper dbHelper;
+
+
     private Context context;
     private BrickOrder newBrick;
     private boolean pinnedDummyTouch;
@@ -89,8 +95,9 @@ class AddRemoveExpandableExampleAdapter
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_ITEM = 1;
     private static final int GROUP_ITEM_VIEW_TYPE_SECTION_FOOTER = 2;
 
-    private static final int CHILD_ITEM_VIEW_TYPE_SECTION_FOOTER = 0;
+    private static final int CHILD_ITEM_VIEW_TYPE_SECTION_PALETTES = 0;
     private static final int CHILD_ITEM_VIEW_TYPE_SECTION_ITEM = 1;
+    private static final int CHILD_ITEM_VIEW_TYPE_SECTION_TRANSPORT = 2;
 
 
     private boolean mAllowItemsMoveAcrossSections;
@@ -134,6 +141,7 @@ class AddRemoveExpandableExampleAdapter
         mExpandableItemManager.notifyChildItemInserted(whenNewBrickGroupPosition, 0);
         mExpandableItemManager.expandGroup(whenNewBrickGroupPosition);
         updateOrderSum(whenNewBrickGroupPosition);
+
     }
 
 
@@ -372,9 +380,9 @@ class AddRemoveExpandableExampleAdapter
     public int getChildItemViewType(int groupPosition, int childPosition) {
         final AbstractAddRemoveExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
         if (item.isSectionFooterPaletes()) {
-            return CHILD_ITEM_VIEW_TYPE_SECTION_FOOTER;
+            return CHILD_ITEM_VIEW_TYPE_SECTION_PALETTES;
         } else if (item.isSectionFooterTransport()){
-            return CHILD_ITEM_VIEW_TYPE_SECTION_FOOTER;
+            return CHILD_ITEM_VIEW_TYPE_SECTION_TRANSPORT;
         } else {
             return CHILD_ITEM_VIEW_TYPE_SECTION_ITEM;
         }
@@ -518,6 +526,8 @@ class AddRemoveExpandableExampleAdapter
 
     private void onBindSectionFooterGroupViewHolder(MyGroupViewHolder holder, int gropPosition){
         holder.mRelativeLayoutInfo.setVisibility(View.VISIBLE);
+        holder.mRelativeLayoutFooterInfo.setVisibility(View.GONE);
+
         holder.mRelativeLayoutInfo.setOnClickListener(mItemOnClickListener);
 //        holder.mRelativeLayoutFooterInfo.setVisibility(View.GONE);
 //        holder.mFooterTextOrderPrice.setText(stringGroupPriceSum);
@@ -526,15 +536,26 @@ class AddRemoveExpandableExampleAdapter
         int last = findLastSectionItem(gropPosition);
         Log.i(TAG, "onBindSectionFooterGroupViewHolder: start: " +start + "\nlast: " + last);
         Double groupPriceBricks =mProvider.getChildPriceSum(start, last);
+
+        Double sectionGroupPrice = 0.0;
+        for (int i = start; i<=last; i++){
+            sectionGroupPrice = sectionGroupPrice + mProvider.getGroupItem(i).getGroupPrice();
+        }
+        Log.wtf(TAG, "Check getSectionGroupPriceSum: " + sectionGroupPrice);
+
+        Double groupPriceBrickPVN = groupPriceBricks*0.21;
+        Double groupPriceBrickSUMM_PVN = groupPriceBricks*1.21;
         Double groupPalettes = mProvider.getChildPalettesSum(start, last);
 
-        //hidden layout
-        String stringGroupPriceSum = String.valueOf(groupPriceBricks);
-        String stringGroupPricePvn = String.valueOf(groupPriceBricks*0.21);
-        String stringGroupPriceSum_Pvn = String.valueOf(groupPriceBricks*1.21);
-        holder.mFooterTextViewSum.setText(stringGroupPriceSum);
-        holder.mFooterTextViewPvn.setText(stringGroupPricePvn);
-        holder.mFooterTextViewPvn_Sum.setText(stringGroupPriceSum_Pvn);
+        groupPriceBricks = FilterDialogFragment.round2(groupPriceBricks);
+        groupPriceBrickPVN = FilterDialogFragment.round2(groupPriceBrickPVN);
+        groupPriceBrickSUMM_PVN = FilterDialogFragment.round2(groupPriceBrickSUMM_PVN);
+        groupPalettes = FilterDialogFragment.round2(groupPalettes);
+
+        //Bottom layout (Gray)
+        holder.mFooterTextViewSum.setText(String.valueOf(groupPriceBricks));
+        holder.mFooterTextViewPvn.setText(String.valueOf(groupPriceBrickPVN));
+        holder.mFooterTextViewPvn_Sum.setText(String.valueOf(groupPriceBrickSUMM_PVN));
 
         int groupCount = mProvider.getGroupCount();
         int childCount = mProvider.getChildCount(gropPosition);
@@ -546,6 +567,7 @@ class AddRemoveExpandableExampleAdapter
         holder.mTextExtra.setText(String.valueOf(id));
     }
 
+    //order of one Address!!! //todo groupSectionFooterIs inncorect
     private void updateOrderSum(int a){
         int start = findFirstSectionItem(whenNewBrickGroupPosition);
         int end = findLastSectionItem(a);
@@ -556,6 +578,7 @@ class AddRemoveExpandableExampleAdapter
         if (gD.isSectionFooter()){
             gD.setGroupPrice(groupPriceBricks);
             gD.setPalletes(groupPalettes);
+            gD.notify();
         }else {
             Log.i(TAG, "updateOrderSum: groupPrice is not set  in footer");
         }
@@ -575,6 +598,7 @@ class AddRemoveExpandableExampleAdapter
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
         holder.itemView.setOnClickListener(mItemOnClickListener);
+        holder.mButtonChangeUnit.setOnClickListener(mItemOnClickListener);
 
 //        if(mProvider.getChildItem(groupPosition, childPosition).isPinned()){
 //
@@ -587,15 +611,16 @@ class AddRemoveExpandableExampleAdapter
         if (newBrick != null){
             Log.i(TAG, "onBindChildViewHolder: \n newBrick.getBrick(): " + newBrick.getName() + "\nitem.getText(): " + item.getText());
             Log.i(TAG, "onBindChildViewHolder: item: " + item + "\n newBrick: " + newBrick);
-            holder.mTextView.setText(newBrick.getName());
+            String brickName = newBrick.getName().replace("_", " ");
+            holder.mTextView.setText(brickName);
             Log.d(TAG, "onBindChildViewHolder: Manufacture name: " + newBrick.getName()) ;
         }else{
             holder.mTextView.setText(item.getText());
         }
         holder.mTextView.setText(item.getText());
-        holder.mEditTextBrickAmount.setText( String.valueOf(item.getChildAmount()));
+        holder.mEditTextBrickAmount.setText( String.valueOf (item.getChildAmount()));
         holder.mButtonChangeUnit.setText(item.getChildUnit());
-        holder.mEditTextBrickPrice.setText(item.getChildPrice().toString());
+        holder.mEditTextBrickPrice.setText(String.valueOf(item.getChildPrice()));
 
         double amount_price = item.getChildAmount()*item.getChildPrice();
         String euroSum = String.valueOf(amount_price);
@@ -636,8 +661,20 @@ class AddRemoveExpandableExampleAdapter
             return false;
         }
 
-        // check is normal item
+        // check is normal(middle) item
         if (!isSectionHeader(holder) || !isSectionFooter(holder)) {
+            try {
+                if (holder != null){
+
+                }
+                if (holder.mRelativeLayoutInfo.getVisibility() == View.VISIBLE){
+                    onBindSectionFooterGroupViewHolder(holder, groupPosition);
+
+                }
+
+            }catch (Exception e){
+                Log.i(TAG, "onCheckCanExpandOrCollapseGroup: ExceptionTry: " + e);
+            }
             return false;
         }
 
@@ -745,6 +782,7 @@ class AddRemoveExpandableExampleAdapter
             //Open fragment: creteBrickItem
             case R.id.image_button_add_item:
                 handleOnClickGroupItemAddChildTopButton(groupPosition);
+//                onBindSectionFooterGroupViewHolder(vh, groupPosition);
                 break;
             case R.id.image_button_edit_address:
                 //TODO pop up dialog ==> set new addres
@@ -846,6 +884,9 @@ class AddRemoveExpandableExampleAdapter
     private void handleOnClickGroupItemAddChildTopButton(int groupPosition) {
         whenNewBrickGroupPosition = groupPosition;
         openDialogFragmentNewBrick();
+//        AddRemoveExpandableExampleAdapter.this.notifyItemChanged(groupPosition);
+//        AddRemoveExpandableExampleActivity activity = (AddRemoveExpandableExampleActivity) context;
+//        FragmentManager fm = activity.getSupportFragmentManager();
 
         Log.d(TAG, "handleOnClickGroupItemAddChildTopButton: Fragment opened!");
         if (newBrick!=null){
@@ -860,6 +901,25 @@ class AddRemoveExpandableExampleAdapter
 
     }
 
+    private void loadUserArrayList(){
+        usersArrayList = dbHelper.getUsers();
+    }
+    private void loadAddressList(){
+        addressesArrayList= dbHelper.getAddress();
+    }
+
+    public void buildRecycleView() {
+        int layoutView = R.layout.dialog_edit_item_text;
+        AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
+        LayoutInflater inflater = addRemoveExpandableExampleActivity.getLayoutInflater();
+        View dialogView = inflater.inflate(layoutView, null);
+
+        final RecyclerView recyclerViewEdit = dialogView.findViewById(R.id.recycler_viewItemsEdit);
+        final RecyclerView recyclerViewChoose = dialogView.findViewById(R.id.recycler_viewItemsChoose);
+        recyclerViewChoose.setVisibility(View.GONE);
+        recyclerViewEdit.setVisibility(View.GONE);
+    }
+
     private void handleOnClickGroupItemEditPerson(final int groupPosition) {
         //groupPosition == isSectionHed
         String oldClientName = mProvider.getGroupItem(groupPosition).getText();
@@ -871,6 +931,27 @@ class AddRemoveExpandableExampleAdapter
         // Pass null as the parent view because its going in the dialog layout
         View dialogView = inflater.inflate(layoutView, null);
         final EditText editText = dialogView.findViewById(R.id.username);
+
+        Button buttonChoose = dialogView.findViewById(R.id.buttonChooseDialog);
+        Button buttonEdit = dialogView.findViewById(R.id.buttonEditDialog);
+
+        final RecyclerView recyclerViewEdit = dialogView.findViewById(R.id.recycler_viewItemsEdit);
+        final RecyclerView recyclerViewChoose = dialogView.findViewById(R.id.recycler_viewItemsChoose);
+        recyclerViewChoose.setVisibility(View.GONE);
+        recyclerViewEdit.setVisibility(View.GONE);
+
+        buttonChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewEdit.setVisibility(View.GONE);
+
+                recyclerViewChoose.setVisibility(View.VISIBLE);
+                recyclerViewChoose.setHasFixedSize(true);
+//              mLayoutManager = new LinearLayoutManager();
+                //TODO Create list view +(UserAdapter) for edit and search items in dialog msg, or fragment.
+            }
+        });
+
         editText.setHint(R.string.dialog_message_new_peron);
         builder.setView(dialogView);
         builder.setMessage("Vecais klieenta nosaukums: " + oldClientName)
@@ -1161,7 +1242,7 @@ class AddRemoveExpandableExampleAdapter
     @Override
     public boolean onCheckChildCanStartDrag(@NonNull MyChildViewHolder holder, int groupPosition, int childPosition, int x, int y) {
 
-        if (!isSectionFooterPaletes(holder)) {
+        if (!isSectionFooterPaletes(holder) || (!isSectionFooterTansport(holder))) {
             return false;
         }
 
@@ -1666,6 +1747,7 @@ class AddRemoveExpandableExampleAdapter
         if (item.isSectionFooter()){
             lastSectionIndex = position-1;
             return lastSectionIndex;
+
         }
 
         Log.i(TAG, "findLastSectionItem: mProvider.getGroupItem(position+1):" + mProvider.getGroupItem(position));
@@ -1723,6 +1805,11 @@ class AddRemoveExpandableExampleAdapter
 
     private static boolean isSectionFooterPaletes(MyChildViewHolder holder) {
         final int childViewType = RecyclerViewExpandableItemManager.getChildViewType(holder.getItemViewType());
-        return (childViewType != CHILD_ITEM_VIEW_TYPE_SECTION_FOOTER);
+        return (childViewType != CHILD_ITEM_VIEW_TYPE_SECTION_PALETTES);
+    }
+
+    private static boolean isSectionFooterTansport(MyChildViewHolder holder) {
+        final int childViewType = RecyclerViewExpandableItemManager.getChildViewType(holder.getItemViewType());
+        return (childViewType != CHILD_ITEM_VIEW_TYPE_SECTION_TRANSPORT);
     }
 }

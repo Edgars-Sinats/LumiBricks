@@ -41,8 +41,10 @@ import com.lumibricks.data.AbstractAddRemoveExpandableDataProvider;
 import com.lumibricks.db.BrickDbHelper;
 import com.lumibricks.fragment.ExampleAddRemoveExpandableDataProviderFragment;
 import com.lumibricks.fragment.ExpandableItemPinnedMessageDialogFragment;
+import com.lumibricks.model.User;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -58,12 +60,12 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
     private DocumentReference mOrdersRef;
     private DocumentReference mUsersRef;
     private DocumentReference mAddressRef;
-
-
-
+    private BrickDbHelper dbHelper;
 
     private BottomNavigationView mToolbar;
 //    public FilterDialogFragment mDialogFragment;
+
+    AbstractAddRemoveExpandableDataProvider dataProviderNew;
 
 
     @Override
@@ -78,7 +80,7 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
 //        mOrdersRef = mFirestore.collection("bricks").document("orders").collection("users").document("address");
 //        mOrdersRef = mFirestore.collection("bricks").document("orders").collection("users").document("users");
 
-        BrickDbHelper dbHelper = BrickDbHelper.getInstance(this);
+        dbHelper = BrickDbHelper.getInstance(this);
 
         if (savedInstanceState == null) {
 //            createBrickItemInDialogFragment();
@@ -95,7 +97,7 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
             public void onClick(View v) {
 
                 updateFirestore();
-                floatingUpdateButton.hide();
+//                floatingUpdateButton.hide();
             }
         });
 
@@ -103,7 +105,8 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
             @Override
             public void onClick(View v) {
 
-                floatingPushButton.hide();
+                pushSQLite();
+//                floatingPushButton.hide();
             }
         });
 
@@ -273,24 +276,57 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
     }
 
     private void pushSQLite(){
+        int groupCount;
+        String userName = "Error";  //Re-created in process
+        User user;
+
+
+
+        dataProviderNew = getDataProvider();
+        groupCount = dataProviderNew.getGroupCount();
+
+        for (int i=0; i<groupCount; i++){
+            if(checkGroupHead(i))
+            {
+                try {
+                    user = new User();
+                    userName = dataProviderNew.getGroupItem(i).getText();
+                    user.setMobile("");
+                    user.setUserName(userName);
+                    user.seteMail("");
+                    user.setName("20");
+                    user.setSurname("");
+                    user.setBankNr("LV08 HABA 4021");
+
+                    dbHelper.addUser(user);
+
+                }catch (Exception e){
+                    Log.i(TAG, "pushSQLite: Try/catch e:" + e);
+                }
+//                addressList = new HashMap<>();  //re-used in process
+            }
+            else if (!checkGroupHead(i) || !checkGroupFooter(i))
+            {
+
+                Log.i(TAG, "pushSQLite: Big Address");
+//                pushAddressItems()
+//                addressItems.put(userName, createSectionOfAddress(i, addressList)); //is it returns value???
+            }
+            else if(checkGroupFooter(i))
+            {
+                String footerTXT = dataProviderNew.getGroupItem(i).getText();
+                Log.i(TAG, "updateFirestore: footerTXT:" + footerTXT);
+            }
+        }
 
     }
 
     private void updateFirestore(){
-        AbstractAddRemoveExpandableDataProvider dataProvider = getDataProvider();
-        String addressName;
-
+        dataProviderNew = getDataProvider();
         int groupCount;
-        int childCount;
-        String userName = "Error";
-        Double addressSum;
-        Double palettesAmount;
-        Double palettesSum;
-        Double transportKm;
-        Double transportSum;
-        groupCount = dataProvider.getGroupCount();
-        Boolean checkAllBrickItems;
-        final Map<String, Object> userItems = new HashMap<>();
+        String userName = "Error";  //Re-created in process
+
+        groupCount = dataProviderNew.getGroupCount();
 
         //All groups
         Map<String, Object> addressItems = new HashMap<>();
@@ -298,110 +334,33 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
 
         for (int i=0; i<groupCount; i++){
 
-            if(getGroupHead(i))
+            if(checkGroupHead(i))
             {
-
-                userName = dataProvider.getGroupItem(i).getText();
-                addressList = new HashMap<>();
+                userName = dataProviderNew.getGroupItem(i).getText();
+                addressList = new HashMap<>();  //re-used in process
             }
-            else if (!dataProvider.getGroupItem(i).isSectionHeader() ||
-                    !dataProvider.getGroupItem(i).isSectionFooter())
+            else if (!checkGroupHead(i) || !checkGroupFooter(i))
             {
-
-
-//                addressList = createSectionOfAddress((i));
-
 
                 addressItems.put(userName, createSectionOfAddress(i, addressList)); //is it returns value???
             }
-            else if(dataProvider.getGroupItem(i).isSectionFooter())
+            else if(checkGroupFooter(i))
             {
-                String footerTXT = dataProvider.getGroupItem(i).getText();
+                String footerTXT = dataProviderNew.getGroupItem(i).getText();
                 Log.i(TAG, "updateFirestore: footerTXT:" + footerTXT);
             }
-
-//            userItems.put(userName, addressItems);
-
-//            if (dataProvider.getGroupItem(i).isSectionHeader()){
-//                userName = dataProvider.getGroupItem(i).getText();
-//
-//                for (int groupItem=0; i<groupCount;i++){
-//
-//                    //check if section address
-//                    if (!dataProvider.getGroupItem(i+1).isSectionHeader() ||
-//                            !dataProvider.getGroupItem(i+1).isSectionFooter()){
-//
-//                        int lastSectionItem = lastSectionItem(dataProvider, i+1);
-//                        final Map<String, Object> addressItems = new HashMap<>();
-//                    }
-//                }
-//
-//                int lastSectionItem = lastSectionItem(dataProvider, i+1);
-//                final Map<String, Object> addressItems = new HashMap<>();
-//
-//                for (int sectionGroupItem=i; sectionGroupItem<lastSectionItem; sectionGroupItem++){
-//                    addressName = dataProvider.getGroupItem(i+1).getText();
-//
-//                    palettesAmount = .0;
-//                    addressSum =    0.0;
-//                    Timestamp time;
-//                    transportKm =   .0;
-//                    childCount = dataProvider.getChildCount(i+1);
-//
-//                    final Map<String, Object> bricksItems = new HashMap<>();
-//
-//                    for (int j =0; j<childCount; j++){
-//
-//                        if(!dataProvider.getChildItem(i+1, j).isSectionFooterTransport() ||
-//                                !dataProvider.getChildItem(i+1, j).isSectionFooterTransport()){
-//
-//                            Double amount  = dataProvider.getChildItem(i+1, j).getChildAmount();
-//                            Double price  = dataProvider.getChildItem(i+1, j).getChildPrice();
-//
-//                            addressSum = addressSum + price;    //sum of address (-minus palettes&transport)
-//                            String amount_Price = Double.toString(amount) + "_" + Double.toString(price);
-//                            String brickName  = dataProvider.getChildItem(i+1, j).getText();
-//
-//                            bricksItems.put(brickName, amount_Price);    //addressID
-//
-//                        } else if (dataProvider.getChildItem(i+1, j).isSectionFooterPaletes()){
-//
-//                            palettesAmount = dataProvider.getChildItem(i+1, j).getChildAmount();
-//                            palettesSum = dataProvider.getChildItem(i+1, j).getChildPrice();
-//                            String palettes = dataProvider.getChildItem(i+1, j).getText();
-//                            addressSum  = addressSum + palettesSum;
-//                        } else if(dataProvider.getChildItem(i+1, j).isSectionFooterTransport()){
-//
-//                            transportKm = dataProvider.getChildItem(i+1, j).getChildAmount();
-//                            transportSum  = dataProvider.getChildItem(i+1, j).getChildPrice();
-//                            addressSum  = addressSum + transportSum;
-//
-//                            String transport = dataProvider.getChildItem(i+1, j).getText();
-//                        }
-//
-//                        bricksItems.put("p", palettesAmount);    //palettes
-//                        bricksItems.put("t", 21);    //timestamp
-//                        bricksItems.put("s", addressSum);    //sum
-//                        bricksItems.put("d", transportKm);    //distance
-//
-//                    }
-//
-//                    addressItems.put(addressName, bricksItems);
-//
-//                }
-//
-//                //add result(last items) items in here
-//
-//                userItems.put(userName, addressItems);
-//            }
 
         }
         uploadUserItems(addressItems);
     }
 
-    private boolean getGroupHead(int group){
+    private boolean checkGroupHead(int group){
         AbstractAddRemoveExpandableDataProvider dataProvider = getDataProvider();
         return dataProvider.getGroupItem(group).isSectionHeader();
+    }
+    private boolean checkGroupFooter(int group){
+        AbstractAddRemoveExpandableDataProvider dataProvider = getDataProvider();
+        return dataProvider.getGroupItem(group).isSectionFooter();
     }
 
     private Map<String, Object> createSectionOfAddress(int sectionItem, Map<String, Object> addressList){
@@ -422,18 +381,16 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
             Map<String, Object> bricksItemCreated;
 
             for (int j =0; j<childCount; j++){
-                bricksItemCreated= createAddres(sectionItem, j, bricksItems);
+                bricksItemCreated= createAddress(sectionItem, j, bricksItems);
                 addressList.put(addressName, bricksItemCreated);
             }
 
-//            addressItems.put(addressName, bricksItems);
         }
-
 
         return addressList; //
     }
 
-    private Map<String, Object> createAddres(int sectionItem, int j, Map<String, Object> bricksItems){
+    private Map<String, Object> createAddress(int sectionItem, int j, Map<String, Object> bricksItems){
         AbstractAddRemoveExpandableDataProvider dataProvider = getDataProvider();
         Double addressSum;
         Double palettesAmount;
@@ -443,7 +400,6 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
         palettesAmount = .0;
         addressSum =    0.0;
         transportKm =   .0;
-
 
         if(!dataProvider.getChildItem(sectionItem+1, j).isSectionFooterTransport() ||
                 !dataProvider.getChildItem(sectionItem+1, j).isSectionFooterTransport()){
@@ -463,6 +419,7 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
             palettesSum = dataProvider.getChildItem(sectionItem+1, j).getChildPrice();
             String palettes = dataProvider.getChildItem(sectionItem+1, j).getText();
             addressSum  = addressSum + palettesSum;
+
         } else if(dataProvider.getChildItem(sectionItem+1, j).isSectionFooterTransport()){
 
             transportKm = dataProvider.getChildItem(sectionItem+1, j).getChildAmount();
@@ -472,12 +429,10 @@ public class AddRemoveExpandableExampleActivity extends AppCompatActivity implem
             String transport = dataProvider.getChildItem(sectionItem+1, j).getText();
         }
 
-
         bricksItems.put("p", palettesAmount);    //palettes
         bricksItems.put("t", Timestamp.now());    //timestamp
         bricksItems.put("s", addressSum);    //sum
         bricksItems.put("d", transportKm);    //distance
-
 
         return bricksItems;
     }

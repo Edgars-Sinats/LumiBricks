@@ -259,6 +259,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 //                configurateSellType()
                 sellTypes = brickArrayList.get(brickIndex).getSellType();
                 items = Arrays.asList(sellTypes.split("\\s*,\\s*"));
+
                 mainTypeItem = items.get(0);
                 mBrickInput.setText(items.get(0));
                 setDefault();
@@ -350,12 +351,14 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
                         return;
                     case(1):
                         mBrickInput.setText("gb");
+                        mainTypeItem = "gb";
                         mBrickInput.setClickable(false);
                         Log.d(TAG, "onItemSelected: Lumi.1");
                         mBrickLimiImage.setBackgroundColor(GREEN);
                         break;
                     case (2):
                         mBrickInput.setText("gb");
+                        mainTypeItem = "gb";
                         mBrickInput.setClickable(false);
                         Log.d(TAG, "onItemSelected: Lumi.2");
                         mBrickLimiImage.setBackgroundColor(BLUE);
@@ -965,11 +968,11 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 
     public BrickOrder getBrickOrder(){
         BrickOrder brick= new BrickOrder();
-        brick.setName(brickItemName + "," + getSelectedBricColor() + "," + getSelectedBrickLumi() + "," + getSelectedBrickQuality());
+        brick.setName(brickItemName + "_" + getSelectedBricColor() + "_" + getSelectedBrickLumi());  // + "_" + getSelectedBrickQuality()
         brick.setAmount(orderAmount);
         brick.setSellType(currentTypeItem);
-        brick.setSellPrice(brickColorPrice);
-        brick.setInputSellType(mainTypeItem);
+        brick.setSellPrice(brickPriceTotal);
+        brick.setInputSellType(mainTypeItem);  //TODO give full list- "m2,bg,rinda"
         brick.setInputSellPrice(inputSellPrice);
         brick.setOrginAmount(orginBrickAmount);
         brick.setPalletes(round2(palletes));

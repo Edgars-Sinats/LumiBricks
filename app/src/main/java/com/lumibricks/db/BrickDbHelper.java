@@ -10,19 +10,22 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.lumibricks.FilterDialogFragment;
+import com.lumibricks.data.ExampleAddRemoveExpandableDataProvider;
 import com.lumibricks.model.Address;
 import com.lumibricks.model.Brick;
 import com.lumibricks.model.ItemInOrder;
 import com.lumibricks.model.Order;
 import com.lumibricks.model.User;
 
+import java.sql.RowId;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
+import static java.sql.Types.ROWID;
 
 public class BrickDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "brick.db"; //Change name if you want to test
-    private static final int DATABASE_VERSION = 10; //increase (version start from 1)
+    private static final int DATABASE_VERSION = 15; //increase (version start from 1)
     private static BrickDbHelper instance;
     public SQLiteDatabase db;
 
@@ -42,6 +45,13 @@ public class BrickDbHelper extends SQLiteOpenHelper {
     public static synchronized BrickDbHelper getInstance(FilterDialogFragment filterDialogFragment) {
         if (instance == null) {
             instance = new BrickDbHelper(filterDialogFragment.getContext());
+        }
+        return instance;
+    }
+
+    public static BrickDbHelper getInstance(ExampleAddRemoveExpandableDataProvider exampleAddRemoveExpandableDataProvider) {
+        if (instance == null) {
+            instance = new BrickDbHelper(exampleAddRemoveExpandableDataProvider.getContext());
         }
         return instance;
     }
@@ -75,8 +85,58 @@ public class BrickDbHelper extends SQLiteOpenHelper {
                 BrickContract.BrickTable.COLUMN_PRICE_WHITE + " TEXT " +
                 ")";
 
-        //Create Brick Table
+        final String SQL_CREATE_ITEMS_IN_ORDER_TABLES = "CREATE TABLE " +
+                BrickContract.ItemsIrOrderTable.TABLE_NAME + "( " +
+                BrickContract.ItemsIrOrderTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_ORDER_ID + " TEXT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_ITEM_NAME + " TEXT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_ITEM_AMOUNT + " TEXT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PRICE + " TEXT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_ITEM_PALETTES + " TEXT, " +
+                BrickContract.ItemsIrOrderTable.COLUMN_IN_STOCK + " TEXT " +
+                ")";
+
+        final String SQL_CREATE_USER_TABLES = "CREATE TABLE " +
+                BrickContract.UserTable.TABLE_NAME + "( " +
+                BrickContract.UserTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BrickContract.UserTable.COLUMN_USER_NAME + " TEXT, " +
+                BrickContract.UserTable.COLUMN_NAME + " TEXT, " +
+                BrickContract.UserTable.COLUMN_SURNAME + " TEXT, " +
+                BrickContract.UserTable.COLUMN_E_MAIL + " TEXT, " +
+                BrickContract.UserTable.COLUMN_MOBILE + " TEXT, " +
+                BrickContract.UserTable.COLUMN_BANK_NR + " TEXT " +
+                ")";
+
+        final String SQL_CREATE_ODER_TABLES = "CREATE TABLE " +
+                BrickContract.OrderTable.TABLE_NAME + "( " +
+                BrickContract.OrderTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BrickContract.OrderTable.COLUMN_USER_ID + " TEXT, " +
+                BrickContract.OrderTable.COLUMN_PALETTES + " TEXT, " +
+                BrickContract.OrderTable.COLUMN_ORDER_PRICE + " TEXT, " +
+                BrickContract.OrderTable.COLUMN_TIMESTAMP + " TEXT, " +
+                BrickContract.OrderTable.COLUMN_ADDRESS_ID + " TEXT " +
+                ")";
+
+        final String SQL_CREATE_ADDRESS_TABLES = "CREATE TABLE " +
+                BrickContract.AddressTable.TABLE_NAME + "( " +
+                BrickContract.AddressTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BrickContract.AddressTable.COLUMN_ADDRESS_NAME + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_COUNTRY + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_REGION + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_CITY + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_STREET + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_HOUSE + " TEXT, " +
+                BrickContract.AddressTable.COLUMN_GEO_LOCATION + " TEXT " +
+                ")";
+
+
+        //Create Table
         db.execSQL(SQL_CREATE_BRICK_TABLES);
+        db.execSQL(SQL_CREATE_ITEMS_IN_ORDER_TABLES);
+        db.execSQL(SQL_CREATE_USER_TABLES);
+        db.execSQL(SQL_CREATE_ODER_TABLES);
+        db.execSQL(SQL_CREATE_ADDRESS_TABLES);
+
         //Fill brick Table
         fillBrickCTable();
 
@@ -88,6 +148,10 @@ public class BrickDbHelper extends SQLiteOpenHelper {
 
         //We could clean old table
         db.execSQL("DROP TABLE IF EXISTS " + BrickContract.BrickTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrickContract.ItemsIrOrderTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrickContract.UserTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrickContract.OrderTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrickContract.AddressTable.TABLE_NAME);
 
         //Rebuild database
         onCreate(db);
@@ -991,6 +1055,15 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         cv.put(BrickContract.UserTable.COLUMN_MOBILE, user.getMobile());
         cv.put(BrickContract.UserTable.COLUMN_BANK_NR, user.getBankNr());
         db.insert(BrickContract.UserTable.TABLE_NAME, null, cv);
+
+//        Cursor cursor = db.rawQuery("SELECT  * FROM " + BrickContract.UserTable.TABLE_NAME, null);
+//        int id = 0;
+//        if(cursor.moveToLast()){
+//            //name = cursor.getString(column_index);//to get other values
+//            id = cursor.getInt(0);//to get id, 0 is the column index
+//            id = ROWID;
+//        }
+//        return id;
     }
 
     public void addAddress(Address address){
@@ -1093,7 +1166,7 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Order orderList = new Order();
-                orderList.setOrderID(c.getInt(c.getColumnIndex(BrickContract.OrderTable._ID)));
+//                orderList.setOrderID(c.getInt(c.getColumnIndex(BrickContract.OrderTable._ID)));
                 try {
                     orderList.setUserID(c.getInt(c.getColumnIndex(BrickContract.OrderTable.COLUMN_USER_ID)));
                     orderList.setPalettes(c.getDouble(c.getColumnIndex(BrickContract.OrderTable.COLUMN_PALETTES)));
@@ -1124,7 +1197,7 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 User user = new User();
-                user.setUserID(c.getInt(c.getColumnIndex(BrickContract.UserTable._ID)));
+//                user.setUserID(c.getInt(c.getColumnIndex(BrickContract.UserTable._ID)));
                 try {
                     user.setUserName(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_USER_NAME)));
                     user.setName(c.getString(c.getColumnIndex(BrickContract.UserTable.COLUMN_NAME)));

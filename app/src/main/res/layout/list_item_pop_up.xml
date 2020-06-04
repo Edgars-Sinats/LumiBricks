@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewEditListItemPopUp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="@string/edititem"
+            style="@style/AppTheme.Title"
+            android:layout_marginStart="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/brickItemEditImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:layout_toEndOf="@id/textViewEditListItemPopUp"
+            android:layout_alignBottom="@id/textViewEditListItemPopUp"
+            android:src="@drawable/ic_edit_black_24dp"
+            />
+
+        <EditText
+            android:id="@+id/editTextEditListItemPopUp"
+            android:layout_width="match_parent"
+            android:layout_height="@android:dimen/app_icon_size"
+            android:layout_marginStart="4dp"
+            android:layout_below="@id/textViewEditListItemPopUp"
+            android:hint="@string/dialog_message_edit"
+            />
+
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

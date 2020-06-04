@@ -52,7 +52,6 @@ public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHol
         void onItemClick(int position);
         void onEditClick(int position);
         void onChange(int change);
-
     }
 
     public void setOnItemClickListener(OnItemclickListener listener) {
@@ -71,7 +70,6 @@ public class BrickAdapter extends RecyclerView.Adapter<BrickAdapter.BrickViewHol
         public ImageView mCreateButton;
         public ImageView m2ClassButton;
         public EditText mAmountEditText;
-
         InputMethodManager imm;
 
 

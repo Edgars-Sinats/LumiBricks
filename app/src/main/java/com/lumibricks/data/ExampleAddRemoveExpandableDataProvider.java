@@ -38,7 +38,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     private List<Pair<GroupData, List<ChildData>>> mData;
     private Pair<GroupData, List<ChildData>> mLastRemovedData;
     private int mLastRemovedPosition = -1;
-    BrickDbHelper dbHelper;
+    BrickDbHelper dbHelper = BrickDbHelper.getInstance(this);
 
 
     // for undo group item
@@ -115,10 +115,10 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
                     final long childId = mChildIdGenerator.next();
                     if (j==0){
                         final String childText = "Transports";
-                        children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 00.0, 0.0, false));
+                        children.add(new ConcreteChildData(childId, false, true, childText, "KM", 1.0, 00.0, 0.0, false));
                     } else{
-                        final String childText = "Paletes";
-                        children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 0.0, false));
+                        final String childText = "Palettes";
+                        children.add(new ConcreteChildData(childId, true, false, childText, "GB", 1.0, 2.5, 0.0, false));
                     }
                 }
 
@@ -129,6 +129,11 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 
         }
 
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
     }
 
     @Override
@@ -338,11 +343,11 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
         for (int j = 0; j < 2; j++) {
             final long childId = mChildIdGenerator.next();
             if (j==0){
-                final String childText = "Transports";
-                children.add(new ConcreteChildData(childId, true, false, childText, "-", 1.0, 0.0, 0.0, false));
+                final String childText = "Palettes";
+                children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 0.0, false));
             } else{
-                final String childText = "Paletes";
-                children.add(new ConcreteChildData(childId, true, false, childText, "gb", 1.0, 2.5, 2.1, false));
+                final String childText = "Transports";
+                children.add(new ConcreteChildData(childId, false, true, childText, "km", 0.0, 1.1, 0.0, false));
             }
         }
         mData.add(new Pair<GroupData, List<ChildData>>(group, children));
@@ -354,7 +359,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     }
 
     @Override
-    public void addChildItem(int groupPosition, int childPosition, BrickOrder manufacture) {
+    public void addChildItem(int groupPosition, int childPosition, BrickOrder brickOrder) {
         final Pair<GroupData, List<ChildData>> toGroup = mData.get(groupPosition);
 
         if (toGroup.first.isSectionHeader()) {
@@ -366,11 +371,13 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 //        final String childText = Character.toString(childItems.charAt(1));
 
         final long childId = mChildIdGenerator.next();
-        final String childText = manufacture.getName();
-        final Double childAmount = manufacture.getOrginAmount();
-        final double childPrice = manufacture.getSellPrice();
-        final double childPalletes = manufacture.getPalletes();
-        final ConcreteChildData item = new ConcreteChildData(childId, false, false, childText, "Gb", childAmount, childPrice, childPalletes, false);
+        final String childText = brickOrder.getName();//BRICK name_color_lumi
+        final Double childAmount = brickOrder.getOrginAmount();
+        final double childPrice = brickOrder.getSellPrice();
+        final double childPalletes = brickOrder.getPalletes();
+        final String childUnit = brickOrder.getInputSellType();
+
+        final ConcreteChildData item = new ConcreteChildData(childId, false, false, childText, childUnit, childAmount, childPrice, childPalletes, false);
 //        children.add(new ConcreteChildData(childId, childText));
 
         Log.d("DataProvider", "addChildItem: "+ item.toString());
@@ -523,9 +530,15 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 
         @Override
         public String changeUnit(String oldChildUnit) {
+
+            String[] fullName;
+            fullName = mText.split("_");
+            String brickName;
+            brickName = fullName[0];
+
             if (oldChildUnit.equals("M2")){
                 return "GB";
-            } else if(oldChildUnit.equals("BG")){
+            } else if(oldChildUnit.equals("GB")){
                 return "M2";
             } else {
                 return oldChildUnit;
