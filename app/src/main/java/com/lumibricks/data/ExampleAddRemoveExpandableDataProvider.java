@@ -38,7 +38,25 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
     private List<Pair<GroupData, List<ChildData>>> mData;
     private Pair<GroupData, List<ChildData>> mLastRemovedData;
     private int mLastRemovedPosition = -1;
-    BrickDbHelper dbHelper = BrickDbHelper.getInstance(this);
+    private ArrayList<Brick> brickArrayList;
+    private ArrayList<Brick> brickArrayList1;
+    String a;
+
+//    private Object FilterDialogFragment;
+//    BrickDbHelper dbHelper = BrickDbHelper.getInstance(FilterDialogFragment);
+
+//    public void setDbHelper(BrickDbHelper dbHelper) {
+//        this.dbHelper = dbHelper;
+//    }
+//
+//    public BrickDbHelper dbHelper() {
+//        return dbHelper;
+//    }
+//    brickArrayList = dbHelper.getBricks();
+//    a = brickArrayList.get(2).getName();
+
+
+//    String sa = a.replace(" ", "_");
 
 
     // for undo group item
@@ -371,10 +389,12 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
 //        final String childText = Character.toString(childItems.charAt(1));
 
         final long childId = mChildIdGenerator.next();
-        final String childText = brickOrder.getName();//BRICK name_color_lumi
-        final Double childAmount = brickOrder.getOrginAmount();
+        final String childText = brickOrder.getName();//BRICK (NOT - name_color_lumi)
         final double childPrice = brickOrder.getSellPrice();
         final double childPalletes = brickOrder.getPalletes();
+
+        //INPUT! not main
+        final Double childAmount = brickOrder.getOrginAmount();
         final String childUnit = brickOrder.getInputSellType();
 
         final ConcreteChildData item = new ConcreteChildData(childId, false, false, childText, childUnit, childAmount, childPrice, childPalletes, false);
@@ -535,6 +555,7 @@ public class ExampleAddRemoveExpandableDataProvider extends AbstractAddRemoveExp
             fullName = mText.split("_");
             String brickName;
             brickName = fullName[0];
+
 
             if (oldChildUnit.equals("M2")){
                 return "GB";

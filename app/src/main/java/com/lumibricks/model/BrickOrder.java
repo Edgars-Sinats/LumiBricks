@@ -3,6 +3,8 @@ package com.lumibricks.model;
 
 public class BrickOrder {
     private String name;
+    private String color;
+    private String lumi;
     private String sellType;
     private Double sellPrice;
     private String inputSellType;
@@ -13,8 +15,21 @@ public class BrickOrder {
 
     public BrickOrder() { }
 
-    public BrickOrder(String name, String sellType, Double sellPrice, String inputSellType, Double inputSellPrice, Double amount, Double orginAmount, Double palletes) {
+//    public BrickOrder(String name, String sellType, Double sellPrice, String inputSellType, Double inputSellPrice, Double amount, Double orginAmount, Double palletes) {
+//        this.name = name;
+//        this.sellType = sellType;
+//        this.sellPrice = sellPrice;
+//        this.inputSellType = inputSellType;
+//        this.inputSellPrice = inputSellPrice;
+//        this.amount = amount;
+//        this.orginAmount = orginAmount;
+//        this.palletes = palletes;
+//    }
+
+    public BrickOrder(String name, String color, String lumi, String sellType, Double sellPrice, String inputSellType, Double inputSellPrice, Double amount, Double orginAmount, Double palletes) {
         this.name = name;
+        this.color = color;
+        this.lumi = lumi;
         this.sellType = sellType;
         this.sellPrice = sellPrice;
         this.inputSellType = inputSellType;
@@ -30,6 +45,22 @@ public class BrickOrder {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getLumi() {
+        return lumi;
+    }
+
+    public void setLumi(String lumi) {
+        this.lumi = lumi;
     }
 
     public String getSellType() {

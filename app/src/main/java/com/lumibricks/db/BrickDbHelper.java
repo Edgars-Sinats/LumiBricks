@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.lumibricks.FilterDialogFragment;
+import com.lumibricks.data.AbstractAddRemoveExpandableDataProvider;
 import com.lumibricks.data.ExampleAddRemoveExpandableDataProvider;
 import com.lumibricks.model.Address;
 import com.lumibricks.model.Brick;
@@ -49,12 +50,13 @@ public class BrickDbHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    public static BrickDbHelper getInstance(ExampleAddRemoveExpandableDataProvider exampleAddRemoveExpandableDataProvider) {
+    public static synchronized BrickDbHelper getInstance(AbstractAddRemoveExpandableDataProvider abstractAddRemoveExpandableDataProvider) {
         if (instance == null) {
-            instance = new BrickDbHelper(exampleAddRemoveExpandableDataProvider.getContext());
+            instance = new BrickDbHelper(abstractAddRemoveExpandableDataProvider.getContext());
         }
         return instance;
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {

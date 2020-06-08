@@ -18,10 +18,23 @@ package com.lumibricks.data;
 
 import android.content.Context;
 
+import com.lumibricks.FilterDialogFragment;
+import com.lumibricks.db.BrickDbHelper;
+import com.lumibricks.model.Brick;
 import com.lumibricks.model.BrickOrder;
 import com.lumibricks.model.Manufacture;
 
+import java.util.ArrayList;
+
 public abstract class AbstractAddRemoveExpandableDataProvider {
+
+    private ArrayList<Brick> brickArrayList;
+    BrickDbHelper dbHelper = BrickDbHelper.getInstance(this);
+
+
+    public BrickDbHelper getDbHelper() {
+        return dbHelper;
+    }
 
     public abstract Context getContext();
 

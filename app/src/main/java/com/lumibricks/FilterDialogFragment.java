@@ -499,7 +499,7 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 
         if (brickName != null) {
 
-//            TODO make check for ** TAKTILAIS pump/line ** (specific brick whit no gray color(only yellow))
+//            TODO **check Price** for ** TAKTILAIS pump/line ** (specific brick whit no gray color(only yellow))  ==>
 //            if (brickName.equals("TAKTILAS pump") || brickName.equals("TAKTILAS line")){
 //                brickPrice  = brickArrayList.get(brickIndex).getPriceColor();
 //            }else {
@@ -968,7 +968,9 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
 
     public BrickOrder getBrickOrder(){
         BrickOrder brick= new BrickOrder();
-        brick.setName(brickItemName + "_" + getSelectedBricColor() + "_" + getSelectedBrickLumi());  // + "_" + getSelectedBrickQuality()
+        brick.setName(brickItemName);  // + "_" + getSelectedBrickQuality()
+        brick.setColor(getSelectedBricColor());
+        brick.setColor(getSelectedBrickLumi());
         brick.setAmount(orderAmount);
         brick.setSellType(currentTypeItem);
         brick.setSellPrice(brickPriceTotal);

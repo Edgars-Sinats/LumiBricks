@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/cardview_default_radius">
+
+    <TextView
+        android:id="@+id/textViewNameEdit_Choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/2"
+        style="@style/AppTheme.Title"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonEditDialogFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFBB33"
+            android:backgroundTintMode="src_atop"
+            android:drawableStart="@drawable/ic_edit_black_24dp"
+        />
+
+        <Button
+            android:id="@+id/buttonChooseDialogFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFBB33"
+            android:drawableEnd="@drawable/ic_search_black_24dp"
+            />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/usernameFragment"
+        android:inputType="textEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/cliient" />
+
+    <RelativeLayout
+        android:id="@+id/fragCoosItemName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconBrickItemColor"
+            style="@style/AppTheme.FilterIcon"
+            android:contentDescription="@string/brick_color"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_stat_name" />
+
+        <Spinner
+            android:id="@+id/spinnerItemChoose"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconBrickItemColor" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem1"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem1"
+            android:layout_toStartOf="@+id/buttonItem1"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+        <!--        android:text="@string/brick_fake_amount"-->
+
+        <Button
+            android:id="@+id/buttonItem1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem2"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem2"
+            android:layout_toStartOf="@+id/buttonItem2"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/buttonItem2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem3"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem3"
+            android:layout_toStartOf="@+id/buttonItem3"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/buttonItem3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem4"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem4"
+            android:layout_toStartOf="@+id/buttonItem4"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/buttonItem4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem5"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem5"
+            android:layout_toStartOf="@+id/buttonItem5"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/buttonItem5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem6"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem6"
+            android:layout_toStartOf="@+id/buttonItem6"
+            android:hint="@string/chooseItem"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/buttonItem6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayFrag7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconItem7"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            android:tint="@color/greySecondary"
+            app:srcCompat="@drawable/ic_brick_input_black_24dp"
+            android:contentDescription="@string/brick_insert_amount" />
+
+        <EditText
+            android:id="@+id/editTextItem7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iconItem7"
+            android:layout_toStartOf="@+id/buttonItem7"
+            android:hint="@string/chooseItem"
+            android:inputType="numberDecimal"
+            />
+
+        <Button
+            android:id="@+id/buttonItem7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/gb"
+            android:drawableEnd="@drawable/ic_brick_m2_black_24dp"/>
+
+    </RelativeLayout>
+
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerRestaurants"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+
+<!--        android:layout_marginTop="3dp"-->
+<!--        android:layout_marginBottom="-4dp"-->
+<!--        android:background="@android:color/white"-->
+<!--        android:scrollbars="vertical"-->
+<!--        tools:listitem="@layout/list_item_brugis" />-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recycler_viewItemsChoose"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginTop="-65dp"-->
+<!--        android:layout_marginStart="-20dp"-->
+<!--        android:layout_marginEnd="-20dp"-->
+<!--        android:visibility="gone"-->
+<!--        tools:listitem="@layout/list_item_choose_pop_up" />-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recycler_viewItemsEdit"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginTop="-65dp"-->
+<!--        android:layout_marginStart="-20dp"-->
+<!--        android:layout_marginEnd="-20dp"-->
+<!--        android:visibility="gone"-->
+<!--        tools:listitem="@layout/list_item_pop_up" />-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/butItemChooseCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"/>
+
+        <Button
+            android:id="@+id/butItemChooseOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/ok"/>
+
+    </RelativeLayout>
+
+
+<!--    <EditText-->
+<!--        android:id="@+id/password"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="4dp"-->
+<!--        android:layout_marginLeft="4dp"-->
+<!--        android:layout_marginRight="4dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:fontFamily="sans-serif"-->
+<!--        android:hint="@string/password"/>-->
+</LinearLayout>

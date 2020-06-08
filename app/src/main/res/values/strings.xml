@@ -76,6 +76,7 @@
     <string name="dialog_message_edit">Rediģēt</string>
     <string name="edititem">Rediģēt ierakstu</string>
     <string name="chooseItem">Ieraksta nosaukums</string>
+    <string name="ok">Apstiprināt</string>
 
     <!--    <item>@string/value_brick_types</item>-->
 <!--    If changed order in array(first 4 items), than need to change MainActivity.setBrickImage __else if(){}__ statement  -->

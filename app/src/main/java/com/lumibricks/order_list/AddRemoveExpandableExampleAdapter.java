@@ -54,6 +54,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
+import com.lumibricks.EditUserFragment;
 import com.lumibricks.FilterDialogFragment;
 import com.lumibricks.R;
 import com.lumibricks.adapter.UserAdapter;
@@ -73,10 +74,14 @@ class AddRemoveExpandableExampleAdapter
         extends AbstractExpandableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>,
         ExpandableSwipeableItemAdapter<AddRemoveExpandableExampleAdapter.MyGroupViewHolder, AddRemoveExpandableExampleAdapter.MyChildViewHolder>,
-        FilterDialogFragment.ManufactureListener {
+        FilterDialogFragment.ManufactureListener,
+        EditUserFragment.ChooseListiner{
+
     private static final String TAG = "MyExpandableItemAdapter";
 
-        // NOTE: Make accessible with short name
+
+
+    // NOTE: Make accessible with short name
       private interface Swipeable extends SwipeableItemConstants {
       }
 
@@ -84,10 +89,13 @@ class AddRemoveExpandableExampleAdapter
     ArrayList<Address> addressesArrayList;
     private UserAdapter mUserAdapter;
     private BrickDbHelper dbHelper;
+    EditUserFragment editUserFragment;
+
 
 
     private Context context;
     private BrickOrder newBrick;
+    private User newUser;
     private boolean pinnedDummyTouch;
     private boolean pinnedDummyTouchChild;
 
@@ -117,6 +125,8 @@ class AddRemoveExpandableExampleAdapter
 
     private int whenNewBrickGroupPosition;
     private String editedBrickName;
+    private int newUserInt_Fragment;
+
     public interface EventListener {
 
         void onGroupItemRemoved(int groupPosition);
@@ -144,6 +154,22 @@ class AddRemoveExpandableExampleAdapter
 
     }
 
+    @Override
+    public void onChoose(User user) {
+        newUser = user;
+        String newName = user.getUserName();
+        mProvider.getGroupItem(newUserInt_Fragment).setText(newName);
+        AbstractAddRemoveExpandableDataProvider.GroupData gD = mProvider.getGroupItem(newUserInt_Fragment);
+
+        if (gD.isSectionFooter()){
+            gD.setText(newName);
+            gD.notify();
+        }else {
+            Log.i(TAG, "updateOrderSum: groupPrice is not set  in footer");
+        }
+
+        mExpandableItemManager.notifyGroupItemChanged(newUserInt_Fragment);
+    }
 
 //    public interface EventListener {
 //    void onItemPinned(int position);
@@ -923,64 +949,84 @@ class AddRemoveExpandableExampleAdapter
     private void handleOnClickGroupItemEditPerson(final int groupPosition) {
         //groupPosition == isSectionHed
         String oldClientName = mProvider.getGroupItem(groupPosition).getText();
-        int layoutView = R.layout.dialog_edit_item_text;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(AddRemoveExpandableExampleAdapter.this.context);
+//        editUserFragment = new EditUserFragment();
+
+        /*
+            Crete fragment and pass personEdit text
+         */
         AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
-        LayoutInflater inflater = addRemoveExpandableExampleActivity.getLayoutInflater();
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        View dialogView = inflater.inflate(layoutView, null);
-        final EditText editText = dialogView.findViewById(R.id.username);
+        FragmentManager fm = addRemoveExpandableExampleActivity.getSupportFragmentManager();
+        EditUserFragment mDialogFragmentnew = new EditUserFragment();
 
-        Button buttonChoose = dialogView.findViewById(R.id.buttonChooseDialog);
-        Button buttonEdit = dialogView.findViewById(R.id.buttonEditDialog);
+        Bundle bundle = new Bundle();
+        bundle.putString("buttonPressed", "editUser");
+        bundle.putString("currentItem", oldClientName);
+        mDialogFragmentnew.setArguments(bundle);
+        mDialogFragmentnew.setNewChooseListener(AddRemoveExpandableExampleAdapter.this);
+        mDialogFragmentnew.show(fm, FilterDialogFragment.TAG);
+        newUserInt_Fragment = groupPosition;
 
-        final RecyclerView recyclerViewEdit = dialogView.findViewById(R.id.recycler_viewItemsEdit);
-        final RecyclerView recyclerViewChoose = dialogView.findViewById(R.id.recycler_viewItemsChoose);
-        recyclerViewChoose.setVisibility(View.GONE);
-        recyclerViewEdit.setVisibility(View.GONE);
 
-        buttonChoose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerViewEdit.setVisibility(View.GONE);
-
-                recyclerViewChoose.setVisibility(View.VISIBLE);
-                recyclerViewChoose.setHasFixedSize(true);
-//              mLayoutManager = new LinearLayoutManager();
-                //TODO Create list view +(UserAdapter) for edit and search items in dialog msg, or fragment.
-            }
-        });
-
-        editText.setHint(R.string.dialog_message_new_peron);
-        builder.setView(dialogView);
-        builder.setMessage("Vecais klieenta nosaukums: " + oldClientName)
-                .setTitle(R.string.dialog_message_edit_peron);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // User clicked OK button
-                String a = String.valueOf(editText.getText());
-                editedBrickName = a;
-                mProvider.getGroupItem(groupPosition).setText(a);
-//                mProvider.getGroupItem(groupPosition).setText(editedBrickName);
-                mExpandableItemManager.notifyGroupItemChanged(groupPosition);
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
- //        mExpandableItemManager.notifyGroupItemInserted(groupPosition + 1);
+//        int layoutView = R.layout.dialog_edit_item_text;
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(AddRemoveExpandableExampleAdapter.this.context);
+//        AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
+//        LayoutInflater inflater = addRemoveExpandableExampleActivity.getLayoutInflater();
+//        // Inflate and set the layout for the dialog
+//        // Pass null as the parent view because its going in the dialog layout
+//        View dialogView = inflater.inflate(layoutView, null);
+//        final EditText editText = dialogView.findViewById(R.id.username);
+//
+//        Button buttonChoose = dialogView.findViewById(R.id.buttonChooseDialog);
+//        Button buttonEdit = dialogView.findViewById(R.id.buttonEditDialog);
+//
+//        final RecyclerView recyclerViewEdit = dialogView.findViewById(R.id.recycler_viewItemsEdit);
+//        final RecyclerView recyclerViewChoose = dialogView.findViewById(R.id.recycler_viewItemsChoose);
+//        recyclerViewChoose.setVisibility(View.GONE);
+//        recyclerViewEdit.setVisibility(View.GONE);
+//
+//        buttonChoose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                recyclerViewEdit.setVisibility(View.GONE);
+//
+//                recyclerViewChoose.setVisibility(View.VISIBLE);
+//                recyclerViewChoose.setHasFixedSize(true);
+////              mLayoutManager = new LinearLayoutManager();
+//                //TODO Create list view +(UserAdapter) for edit and search items in dialog msg, or fragment.
+//            }
+//        });
+//
+//        editText.setHint(R.string.dialog_message_new_peron);
+//        builder.setView(dialogView);
+//        builder.setMessage("Vecais klieenta nosaukums: " + oldClientName)
+//                .setTitle(R.string.dialog_message_edit_peron);
+//        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // User clicked OK button
+//                String a = String.valueOf(editText.getText());
+//                editedBrickName = a;
+//                mProvider.getGroupItem(groupPosition).setText(a);
+////                mProvider.getGroupItem(groupPosition).setText(editedBrickName);
+//                mExpandableItemManager.notifyGroupItemChanged(groupPosition);
+//                dialog.dismiss();
+//            }
+//        });
+//        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // User cancelled the dialog
+//            }
+//        });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+// //        mExpandableItemManager.notifyGroupItemInserted(groupPosition + 1);
     }
 
     private void handleOnClickGroupItemEditAddress(final int groupPosition){
         String oldAddress = mProvider.getGroupItem(groupPosition).getText();
+
+
         int layoutView = R.layout.dialog_edit_item_text;
         final AlertDialog.Builder builder = new AlertDialog.Builder(AddRemoveExpandableExampleAdapter.this.context);
         AddRemoveExpandableExampleActivity addRemoveExpandableExampleActivity = (AddRemoveExpandableExampleActivity) context;
